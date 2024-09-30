@@ -17,7 +17,7 @@ public class Ingrediente {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
-    private UUID uuid;
+    private UUID id;
     private String nome;
     private String descrizione;
     private String valoriNutrizionali;

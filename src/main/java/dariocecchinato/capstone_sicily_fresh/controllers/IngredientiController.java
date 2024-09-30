@@ -1,10 +1,12 @@
 package dariocecchinato.capstone_sicily_fresh.controllers;
 
+import dariocecchinato.capstone_sicily_fresh.entities.Ingrediente;
 import dariocecchinato.capstone_sicily_fresh.exceptions.BadRequestException;
 import dariocecchinato.capstone_sicily_fresh.payloads.IngredientiPayloadDTO;
 import dariocecchinato.capstone_sicily_fresh.payloads.IngredientiResponseDTO;
 import dariocecchinato.capstone_sicily_fresh.services.IngredientiService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -27,9 +29,17 @@ public class IngredientiController {
                     .collect(Collectors.joining(". "));
             throw new BadRequestException("Ci sono stati errori nel payload. " + messages);
         }else{
-                return new IngredientiResponseDTO(this.ingredientiService.saveIngrediente(body).getUuid());
+                return new IngredientiResponseDTO(this.ingredientiService.saveIngrediente(body).getId());
             }
         }
+
+        @GetMapping
+    public Page<Ingrediente> findAll (@RequestParam(defaultValue = "0") int page,
+                                      @RequestParam(defaultValue = "10") int size,
+                                      @RequestParam(defaultValue = "id") String sortby){
+        return ingredientiService.findAll(page, size, sortby);
+        }
+
     }
 
 
