@@ -18,7 +18,7 @@ public class Ricetta {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
-    private UUID uuid;
+    private UUID id;
     private String titolo;
     private String descrizione;
     private String immaginePiatto;
