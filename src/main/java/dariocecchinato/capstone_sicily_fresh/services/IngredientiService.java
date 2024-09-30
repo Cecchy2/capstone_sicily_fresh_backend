@@ -45,4 +45,9 @@ public class IngredientiService {
         found.setValoriNutrizionali(body.valoriNutrizionali());
         return ingredientiRepository.save(found);
     }
+
+    public void findByIdAndDelete(UUID ingredienteId){
+        Ingrediente found = this.findById(ingredienteId);
+        this.ingredientiRepository.delete(found);
+    }
 }

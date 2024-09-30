@@ -35,21 +35,21 @@ public class IngredientiController {
             }
         }
 
-        @GetMapping
+    @GetMapping
     public Page<Ingrediente> findAll (@RequestParam(defaultValue = "0") int page,
                                       @RequestParam(defaultValue = "10") int size,
                                       @RequestParam(defaultValue = "id") String sortby){
         return ingredientiService.findAll(page, size, sortby);
         }
 
-        @GetMapping("/{ingredienteId}")
+    @GetMapping("/{ingredienteId}")
     public Ingrediente findById (@PathVariable UUID ingredienteId){
             Ingrediente found = this.ingredientiService.findById(ingredienteId);
             if (found == null) throw new NotFoundException(ingredienteId);
             return found;
         }
 
-        @PutMapping("/{ingredienteId}")
+    @PutMapping("/{ingredienteId}")
     public Ingrediente findByIdAndUpdate(@PathVariable UUID ingredienteId, @RequestBody @Validated IngredientiPayloadDTO body, BindingResult validationResult){
             if (validationResult.hasErrors()) {
                 String messages = validationResult.getAllErrors().stream()
@@ -60,8 +60,15 @@ public class IngredientiController {
                 return this.ingredientiService.findByIdAndUpdate(ingredienteId, body);
             }
         }
-        }
 
-    
+
+    @DeleteMapping("/{ingredienteId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void findByIdAndDelete (@PathVariable UUID ingredienteId){
+        this.ingredientiService.findByIdAndDelete(ingredienteId);
+    }
+}
+
+
 
 
