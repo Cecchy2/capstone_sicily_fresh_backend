@@ -26,10 +26,9 @@ public class PassaggioDiPreparazione {
 
     private int ordinePassaggio;
 
-    public PassaggioDiPreparazione(String descrizione, String immaginePassaggio, Ricetta ricetta, int ordinePassaggio) {
+    public PassaggioDiPreparazione(String descrizione, String immaginePassaggio, int ordinePassaggio) {
         this.descrizione = descrizione;
         this.immaginePassaggio = immaginePassaggio;
-        this.ricetta = ricetta;
         this.ordinePassaggio = ordinePassaggio;
     }
 }

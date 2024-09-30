@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 @Repository
 public interface IngredientiRepository extends JpaRepository<Ingrediente, UUID> {
+    boolean existsByNome(String nome);
 }
+

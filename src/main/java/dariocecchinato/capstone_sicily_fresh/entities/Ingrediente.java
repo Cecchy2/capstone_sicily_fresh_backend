@@ -1,8 +1,6 @@
 package dariocecchinato.capstone_sicily_fresh.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Ingrediente {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
     private UUID uuid;
     private String nome;
