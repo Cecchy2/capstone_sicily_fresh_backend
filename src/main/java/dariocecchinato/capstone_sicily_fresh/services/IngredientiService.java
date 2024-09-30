@@ -2,6 +2,7 @@ package dariocecchinato.capstone_sicily_fresh.services;
 
 import dariocecchinato.capstone_sicily_fresh.entities.Ingrediente;
 import dariocecchinato.capstone_sicily_fresh.exceptions.BadRequestException;
+import dariocecchinato.capstone_sicily_fresh.exceptions.NotFoundException;
 import dariocecchinato.capstone_sicily_fresh.payloads.IngredientiPayloadDTO;
 import dariocecchinato.capstone_sicily_fresh.payloads.IngredientiResponseDTO;
 import dariocecchinato.capstone_sicily_fresh.repositories.IngredientiRepository;
@@ -11,6 +12,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class IngredientiService {
@@ -29,5 +32,17 @@ public class IngredientiService {
         Ingrediente ingrediente= new Ingrediente(body.nome(), body.descrizione(), body.valoriNutrizionali());
         return ingredientiRepository.save(ingrediente);
 
+    }
+
+    public Ingrediente findById(UUID ingredienteId){
+        return ingredientiRepository.findById(ingredienteId).orElseThrow(()-> new NotFoundException(ingredienteId));
+    };
+
+    public Ingrediente findByIdAndUpdate (UUID ingredienteId, IngredientiPayloadDTO body){
+        Ingrediente found = this.findById(ingredienteId);
+        found.setNome(body.nome());
+        found.setDescrizione(body.descrizione());
+        found.setValoriNutrizionali(body.valoriNutrizionali());
+        return ingredientiRepository.save(found);
     }
 }
