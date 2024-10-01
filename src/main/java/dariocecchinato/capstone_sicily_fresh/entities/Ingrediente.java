@@ -22,9 +22,6 @@ public class Ingrediente {
     private String nome;
     private String descrizione;
     private String valoriNutrizionali;
-    @OneToMany(mappedBy = "ingrediente")
-
-    private List<RicettaIngrediente> ricettaIngredienti;
 
     public Ingrediente(String nome, String descrizione, String valoriNutrizionali) {
         this.nome = nome;

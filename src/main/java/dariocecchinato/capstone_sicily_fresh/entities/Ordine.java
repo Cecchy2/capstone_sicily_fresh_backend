@@ -35,4 +35,14 @@ public class Ordine {
         this.dataOrdine = dataOrdine;
         this.stato = stato;
     }
+
+    @Override
+    public String toString() {
+        return "Ordine{" +
+                "utente=" + utente +
+                ", dataOrdine=" + dataOrdine +
+                ", stato='" + stato + '\'' +
+                ", dettagliOrdini=" + dettagliOrdini +
+                '}';
+    }
 }

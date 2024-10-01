@@ -1,8 +1,5 @@
 package dariocecchinato.capstone_sicily_fresh.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import dariocecchinato.capstone_sicily_fresh.enums.Difficolta;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -40,10 +37,8 @@ public class Ricetta {
     @JoinColumn(name = "fornitore_id")
     private Utente fornitore;
 
-    @OneToMany(mappedBy = "ricetta")
-    private List<DettaglioOrdine> dettagliOrdini;
 
-    public Ricetta(String titolo, String descrizione, String immaginePiatto, Difficolta difficolta, String tempo, String valoriNutrizionali, List<PassaggioDiPreparazione> passaggi, List<RicettaIngrediente> ricettaIngredienti, Utente fornitore, List<DettaglioOrdine> dettagliOrdini) {
+    public Ricetta(String titolo, String descrizione, String immaginePiatto, Difficolta difficolta, String tempo, String valoriNutrizionali, List<PassaggioDiPreparazione> passaggi, List<RicettaIngrediente> ricettaIngredienti, Utente fornitore) {
         this.titolo = titolo;
         this.descrizione = descrizione;
         this.immaginePiatto = immaginePiatto;
@@ -53,7 +48,7 @@ public class Ricetta {
         this.passaggi = passaggi;
         this.ricettaIngredienti = ricettaIngredienti;
         this.fornitore = fornitore;
-        this.dettagliOrdini = dettagliOrdini;
+
     }
 
     @Override
