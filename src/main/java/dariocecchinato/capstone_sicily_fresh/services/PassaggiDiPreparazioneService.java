@@ -34,4 +34,8 @@ public class PassaggiDiPreparazioneService {
     public List<PassaggioDiPreparazione> findPassaggiByRicettaId(UUID ricettaId) {
         return passaggiDiPreparazioneRepository.findByRicettaId(ricettaId);
     }
+
+    public PassaggioDiPreparazione findByIdAndUpdate(UUID passaggioDiPreparazioneId, PassaggiDiPreparazionePayloadDTO body){
+        return this.findByIdAndUpdate(passaggioDiPreparazioneId, body);
+    }
 }

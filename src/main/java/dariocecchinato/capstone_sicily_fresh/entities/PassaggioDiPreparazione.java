@@ -31,6 +31,7 @@ public class PassaggioDiPreparazione {
         this.descrizione = descrizione;
         this.immaginePassaggio = immaginePassaggio;
         this.ordinePassaggio = ordinePassaggio;
+
     }
 
     @Override
