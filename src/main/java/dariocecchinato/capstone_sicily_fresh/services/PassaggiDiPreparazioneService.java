@@ -1,6 +1,7 @@
 package dariocecchinato.capstone_sicily_fresh.services;
 
 import dariocecchinato.capstone_sicily_fresh.entities.PassaggioDiPreparazione;
+import dariocecchinato.capstone_sicily_fresh.exceptions.NotFoundException;
 import dariocecchinato.capstone_sicily_fresh.payloads.PassaggiDiPreparazionePayloadDTO;
 import dariocecchinato.capstone_sicily_fresh.repositories.PassaggiDiPreparazioneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,5 +38,10 @@ public class PassaggiDiPreparazioneService {
 
     public PassaggioDiPreparazione findByIdAndUpdate(UUID passaggioDiPreparazioneId, PassaggiDiPreparazionePayloadDTO body){
         return this.findByIdAndUpdate(passaggioDiPreparazioneId, body);
+    }
+
+    public void findByIdAndDelete(UUID passaggioDiPreparazioneId){
+        PassaggioDiPreparazione found= this.passaggiDiPreparazioneRepository.findById(passaggioDiPreparazioneId).orElseThrow(()-> new NotFoundException(passaggioDiPreparazioneId));
+        this.passaggiDiPreparazioneRepository.delete(found);
     }
 }

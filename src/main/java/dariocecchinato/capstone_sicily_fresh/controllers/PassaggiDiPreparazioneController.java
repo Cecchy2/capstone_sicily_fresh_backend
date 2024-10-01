@@ -43,7 +43,7 @@ public class PassaggiDiPreparazioneController {
         return passaggiDiPreparazioneService.findPassaggiByRicettaId(ricettaId);
     }
 
-    @PutMapping("/passaggiodipreparazioneId")
+    @PutMapping("/{passaggioDiPreparazioneId}")
     public PassaggioDiPreparazione findByIdAndUpdate (@PathVariable UUID passaggioDiPreparazioneId, @RequestBody @Validated PassaggiDiPreparazionePayloadDTO body, BindingResult validation) {
         if (validation.hasErrors()) {
             String messages = validation.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).collect(Collectors.joining(". "));
@@ -51,6 +51,12 @@ public class PassaggiDiPreparazioneController {
             throw new BadRequestException("ci sono stati errori nel payload: " + messages);
         }
         return this.passaggiDiPreparazioneService.findByIdAndUpdate(passaggioDiPreparazioneId,body);
+    }
+
+    @DeleteMapping("/{passaggioDiPreparazioneId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void findByIdAndDelete(@PathVariable UUID passaggioDiPreparazioneId) {
+        this.passaggiDiPreparazioneService.findByIdAndDelete(passaggioDiPreparazioneId);
     }
 
     }
