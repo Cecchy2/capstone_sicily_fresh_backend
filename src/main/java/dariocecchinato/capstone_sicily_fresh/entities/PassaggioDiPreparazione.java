@@ -1,5 +1,6 @@
 package dariocecchinato.capstone_sicily_fresh.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -30,5 +31,14 @@ public class PassaggioDiPreparazione {
         this.descrizione = descrizione;
         this.immaginePassaggio = immaginePassaggio;
         this.ordinePassaggio = ordinePassaggio;
+    }
+
+    @Override
+    public String toString() {
+        return "PassaggioDiPreparazione{" +
+                "descrizione='" + descrizione + '\'' +
+                ", immaginePassaggio='" + immaginePassaggio + '\'' +
+                ", ordinePassaggio=" + ordinePassaggio +
+                '}';
     }
 }

@@ -2,7 +2,9 @@ package dariocecchinato.capstone_sicily_fresh.services;
 
 import dariocecchinato.capstone_sicily_fresh.entities.PassaggioDiPreparazione;
 import dariocecchinato.capstone_sicily_fresh.entities.Ricetta;
+import dariocecchinato.capstone_sicily_fresh.entities.Utente;
 import dariocecchinato.capstone_sicily_fresh.exceptions.BadRequestException;
+import dariocecchinato.capstone_sicily_fresh.exceptions.NotFoundException;
 import dariocecchinato.capstone_sicily_fresh.payloads.RicettePayloadDTO;
 import dariocecchinato.capstone_sicily_fresh.repositories.RicetteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,17 +15,25 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 public class RicetteService {
     @Autowired
     private RicetteRepository ricetteRepository;
+    @Autowired
+    private UtentiService utentiService;
 
     public Ricetta salvaRicetta(RicettePayloadDTO body) {
 
         if (ricetteRepository.existsByTitolo(body.titolo())) {
             throw new BadRequestException("La ricetta " + body.titolo() + " è già presente");
+        }
+
+        Utente fornitore = utentiService.findUtenteById(body.fornitoreId());
+        if (fornitore == null) {
+            throw new BadRequestException("Il fornitore non è stato trovato con l'id: " + body.fornitoreId());
         }
 
         String immaginePiatto = body.immaginePiatto() != null ? body.immaginePiatto() : "https://placehold.co/600x400";
@@ -34,6 +44,7 @@ public class RicetteService {
         ricetta.setDifficolta(body.difficolta());
         ricetta.setTempo(body.tempo());
         ricetta.setValoriNutrizionali(body.valoriNutrizionali());
+        ricetta.setFornitore(fornitore);
 
         Ricetta savedRicetta = ricetteRepository.save(ricetta);
 
@@ -59,5 +70,9 @@ public class RicetteService {
         if (page> 10) page=10;
         Pageable pageable = PageRequest.of(page,size, Sort.by(sortBy));
         return ricetteRepository.findAll(pageable);
+    }
+
+    public Ricetta findById(UUID ricettaId){
+        return this.ricetteRepository.findById(ricettaId).orElseThrow(()->new NotFoundException(ricettaId));
     }
 }

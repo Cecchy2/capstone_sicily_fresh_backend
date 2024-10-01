@@ -50,4 +50,8 @@ public class IngredientiService {
         Ingrediente found = this.findById(ingredienteId);
         this.ingredientiRepository.delete(found);
     }
+
+    public Ingrediente findByNome (String nome){
+        return ingredientiRepository.findByNome(nome).orElseThrow(()->new NotFoundException("Ingrediente" + nome + " non trovato"));
+    }
 }

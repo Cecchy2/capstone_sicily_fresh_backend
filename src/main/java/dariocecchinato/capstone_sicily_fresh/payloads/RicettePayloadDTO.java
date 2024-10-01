@@ -16,19 +16,16 @@ public record RicettePayloadDTO(
          String descrizione,
 
          String immaginePiatto,
+        @NotNull(message = "Inserisci il livello di difficoltà")
          Difficolta difficolta,
         @NotEmpty(message = "Il tempo di preparazione è obbligatorio")
          String tempo,
         @NotEmpty(message = "I valori nutrizionali sono obbligatori")
-
         String valoriNutrizionali,
         @NotNull(message = "Il fornitore è obbligatorio")
-
         UUID fornitoreId,
         @NotEmpty(message = "I passaggi di preparazione non possono essere vuoti")
-
         List<PassaggiDiPreparazionePayloadDTO> passaggi,
         @NotEmpty(message = "La lista degli ingredienti non può essere vuota")
-
         List<IngredientiPayloadDTO> ingredienti) {
 }

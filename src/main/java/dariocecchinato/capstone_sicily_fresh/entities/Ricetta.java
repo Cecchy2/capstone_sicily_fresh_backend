@@ -1,5 +1,8 @@
 package dariocecchinato.capstone_sicily_fresh.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import dariocecchinato.capstone_sicily_fresh.enums.Difficolta;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -51,5 +54,20 @@ public class Ricetta {
         this.ricettaIngredienti = ricettaIngredienti;
         this.fornitore = fornitore;
         this.dettagliOrdini = dettagliOrdini;
+    }
+
+    @Override
+    public String toString() {
+        return "Ricetta{" +
+                "titolo='" + titolo + '\'' +
+                ", descrizione='" + descrizione + '\'' +
+                ", immaginePiatto='" + immaginePiatto + '\'' +
+                ", difficolta=" + difficolta +
+                ", tempo='" + tempo + '\'' +
+                ", valoriNutrizionali='" + valoriNutrizionali + '\'' +
+                ", passaggi=" + passaggi +
+                ", ricettaIngredienti=" + ricettaIngredienti +
+                ", fornitore=" + fornitore +
+                '}';
     }
 }

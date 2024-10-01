@@ -61,7 +61,6 @@ public class IngredientiController {
             }
         }
 
-
     @DeleteMapping("/{ingredienteId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void findByIdAndDelete (@PathVariable UUID ingredienteId){

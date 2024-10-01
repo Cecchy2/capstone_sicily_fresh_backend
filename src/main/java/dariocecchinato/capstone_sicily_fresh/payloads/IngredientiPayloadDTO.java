@@ -12,5 +12,7 @@ public record IngredientiPayloadDTO(
         String descrizione,
         @NotEmpty(message = "Valori nutrizionali non possono essere vuoti")
         @Size(max = 10, message = "La descrizione non può superare i 10 caratteri")
-        String valoriNutrizionali) {
+        String valoriNutrizionali,
+        @NotEmpty(message = "La quantità non può essere vuota")
+        String quantita) {
 }

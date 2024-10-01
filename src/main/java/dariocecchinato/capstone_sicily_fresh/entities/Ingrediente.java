@@ -1,5 +1,6 @@
 package dariocecchinato.capstone_sicily_fresh.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -22,11 +23,21 @@ public class Ingrediente {
     private String descrizione;
     private String valoriNutrizionali;
     @OneToMany(mappedBy = "ingrediente")
+
     private List<RicettaIngrediente> ricettaIngredienti;
 
     public Ingrediente(String nome, String descrizione, String valoriNutrizionali) {
         this.nome = nome;
         this.descrizione = descrizione;
         this.valoriNutrizionali = valoriNutrizionali;
+    }
+
+    @Override
+    public String toString() {
+        return "Ingrediente{" +
+                "nome='" + nome + '\'' +
+                ", descrizione='" + descrizione + '\'' +
+                ", valoriNutrizionali='" + valoriNutrizionali + '\'' +
+                '}';
     }
 }

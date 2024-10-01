@@ -1,5 +1,6 @@
 package dariocecchinato.capstone_sicily_fresh.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -18,9 +19,10 @@ import java.util.UUID;
 public class RicettaIngrediente {
     @Id
     @Setter(AccessLevel.NONE)
-    private UUID uuid;
+    private UUID id;
 
     @ManyToOne
+
     @JoinColumn(name = "id_ricetta")
     private Ricetta ricetta;
 
@@ -34,5 +36,14 @@ public class RicettaIngrediente {
         this.ricetta = ricetta;
         this.ingrediente = ingrediente;
         this.quantita = quantita;
+    }
+
+    @Override
+    public String toString() {
+        return "RicettaIngrediente{" +
+                "ricetta=" + ricetta +
+                ", ingrediente=" + ingrediente +
+                ", quantita='" + quantita + '\'' +
+                '}';
     }
 }

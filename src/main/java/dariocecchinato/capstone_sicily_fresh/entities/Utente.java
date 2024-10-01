@@ -1,6 +1,8 @@
 package dariocecchinato.capstone_sicily_fresh.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import dariocecchinato.capstone_sicily_fresh.enums.RuoloUtente;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -32,6 +34,7 @@ public class Utente {
     @Enumerated(EnumType.STRING)
     private RuoloUtente ruolo;
     @OneToMany(mappedBy = "fornitore", cascade = CascadeType.ALL)
+    @JsonBackReference
     private List<Ricetta> ricette;
     @OneToMany(mappedBy = "utente", cascade = CascadeType.ALL)
     private List<Ordine> ordini;

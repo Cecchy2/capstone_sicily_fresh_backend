@@ -8,6 +8,5 @@ public record PassaggiDiPreparazionePayloadDTO(
         String descrizione,
         String immaginePassaggio,
         @NotNull(message = "L'ordine del passaggio è obbligatorio")
-
         int ordinePassaggio) {
 }
