@@ -75,4 +75,9 @@ public class RicetteService {
     public Ricetta findById(UUID ricettaId){
         return this.ricetteRepository.findById(ricettaId).orElseThrow(()->new NotFoundException(ricettaId));
     }
+
+    public void findByIdAndDelete(UUID ricettaId){
+        Ricetta found = this.findById(ricettaId);
+        this.ricetteRepository.delete(found);
+    }
 }

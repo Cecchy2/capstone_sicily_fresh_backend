@@ -87,4 +87,10 @@ public class RicettaController {
         return found;
     }
 
+    @DeleteMapping("/{ricettaId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable UUID ricettaId){
+       this.ricetteService.findByIdAndDelete(ricettaId);
+    }
+
 }
