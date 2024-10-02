@@ -22,11 +22,13 @@ public class Ingrediente {
     private String nome;
     private String descrizione;
     private String valoriNutrizionali;
+    private String immagine;
 
-    public Ingrediente(String nome, String descrizione, String valoriNutrizionali) {
+    public Ingrediente(String nome, String descrizione, String valoriNutrizionali, String immagine) {
         this.nome = nome;
         this.descrizione = descrizione;
         this.valoriNutrizionali = valoriNutrizionali;
+        this.immagine= immagine;
     }
 
     @Override

@@ -29,7 +29,8 @@ public class IngredientiService {
     public Ingrediente saveIngrediente(IngredientiPayloadDTO body){
         if (ingredientiRepository.existsByNome(body.nome()))
             throw new BadRequestException("L'ingrediente " + body.nome() + " già è presente");
-        Ingrediente ingrediente= new Ingrediente(body.nome(), body.descrizione(), body.valoriNutrizionali());
+        String immagine = "https://fastly.picsum.photos/id/848/200/300.jpg?hmac=cNClhUSP4IM6ZT6RTqdeCOLWYEJYBNXaqdflgf_EqD8";
+        Ingrediente ingrediente= new Ingrediente(body.nome(), body.descrizione(), body.valoriNutrizionali(), immagine);
         return ingredientiRepository.save(ingrediente);
 
     }

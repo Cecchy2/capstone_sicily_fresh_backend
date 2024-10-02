@@ -1,5 +1,7 @@
 package dariocecchinato.capstone_sicily_fresh.services;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import dariocecchinato.capstone_sicily_fresh.entities.Utente;
 import dariocecchinato.capstone_sicily_fresh.exceptions.BadRequestException;
 import dariocecchinato.capstone_sicily_fresh.exceptions.NotFoundException;
@@ -11,13 +13,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.UUID;
 
 @Service
 public class UtentiService {
     @Autowired
     private UtentiRepository utentiRepository;
+    @Autowired
+    private Cloudinary cloudinary;
 
     public Utente saveUtente(UtentiPayloadDTO body) {
         if (utentiRepository.existsByEmail(body.email()))
@@ -57,5 +63,13 @@ public class UtentiService {
         Utente found = this.utentiRepository.findById(utenteId).orElseThrow(() -> new NotFoundException(utenteId));
         if (found == null) throw new NotFoundException(utenteId);
         this.utentiRepository.delete(found);
+    }
+
+    public Utente uploadAvatar(UUID utenteId, MultipartFile avatar) throws IOException{
+        Utente found= this.findUtenteById(utenteId);
+        String url= (String) cloudinary.uploader().upload(avatar.getBytes(), ObjectUtils.emptyMap()).get("url");
+        System.out.println("Url " + url);
+        found.setAvatar(url);
+        return this.utentiRepository.save(found);
     }
 }

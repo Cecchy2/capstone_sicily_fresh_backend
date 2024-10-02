@@ -13,6 +13,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -53,7 +56,6 @@ public class UtentiController {
     }
 
     @PutMapping("/{utenteId}")
-
     public Utente findByIdAndUpdate(@PathVariable UUID utenteId, @RequestBody @Validated UtentiPayloadDTO body, BindingResult validationResult) {
         if (validationResult.hasErrors()) {
             String message = validationResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).collect(Collectors.joining(". "));
@@ -64,10 +66,16 @@ public class UtentiController {
     }
 
     @DeleteMapping("/{utenteId}")
-
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void findByIdAndDelete(@PathVariable UUID utenteId) {
         this.utentiService.findByIdAndDeleteUtente(utenteId);
+    }
+
+    @PatchMapping("/{utenteId}/avatar")
+    public Utente uploadAvatar(@PathVariable UUID utenteId, @RequestParam("avatar") MultipartFile avatar) throws IOException {
+        //return this.clienteService.uploadLogoAziendale(clienteId, pic);
+        return this.utentiService.uploadAvatar(utenteId,avatar);
+
     }
 
 }

@@ -1,5 +1,7 @@
 package dariocecchinato.capstone_sicily_fresh.services;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import dariocecchinato.capstone_sicily_fresh.entities.PassaggioDiPreparazione;
 import dariocecchinato.capstone_sicily_fresh.exceptions.NotFoundException;
 import dariocecchinato.capstone_sicily_fresh.payloads.PassaggiDiPreparazionePayloadDTO;
@@ -10,7 +12,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,9 +24,12 @@ public class PassaggiDiPreparazioneService {
     private PassaggiDiPreparazioneRepository passaggiDiPreparazioneRepository;
     @Autowired
     private RicetteService ricetteService;
+    @Autowired
+    private Cloudinary cloudinary;
 
     public PassaggioDiPreparazione salvaPassaggio(PassaggiDiPreparazionePayloadDTO body){
-        PassaggioDiPreparazione passaggioDiPreparazione = new PassaggioDiPreparazione(body.descrizione(),body.immaginePassaggio(), body.ordinePassaggio());
+        String immagine= "https://fastly.picsum.photos/id/848/200/300.jpg?hmac=cNClhUSP4IM6ZT6RTqdeCOLWYEJYBNXaqdflgf_EqD8";
+        PassaggioDiPreparazione passaggioDiPreparazione = new PassaggioDiPreparazione(body.descrizione(),immagine, body.ordinePassaggio());
        return passaggiDiPreparazioneRepository.save(passaggioDiPreparazione);
     }
 
@@ -43,5 +50,17 @@ public class PassaggiDiPreparazioneService {
     public void findByIdAndDelete(UUID passaggioDiPreparazioneId){
         PassaggioDiPreparazione found= this.passaggiDiPreparazioneRepository.findById(passaggioDiPreparazioneId).orElseThrow(()-> new NotFoundException(passaggioDiPreparazioneId));
         this.passaggiDiPreparazioneRepository.delete(found);
+    }
+
+    public PassaggioDiPreparazione uploadimmaginePassaggio (UUID passaggioDiPreparazioneId, MultipartFile immaginePassaggio) throws IOException{
+        PassaggioDiPreparazione found= this.passaggiDiPreparazioneRepository.findById(passaggioDiPreparazioneId).orElseThrow(()->new NotFoundException(passaggioDiPreparazioneId));
+
+        String url = (String) cloudinary.uploader().upload(immaginePassaggio.getBytes(), ObjectUtils.emptyMap()).get("url");
+
+        System.out.println("Url " + url);
+
+        found.setImmaginePassaggio(url);
+        return this.passaggiDiPreparazioneRepository.save(found);
+
     }
 }
