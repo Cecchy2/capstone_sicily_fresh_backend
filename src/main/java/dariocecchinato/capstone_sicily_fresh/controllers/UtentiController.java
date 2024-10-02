@@ -25,7 +25,7 @@ public class UtentiController {
     @Autowired
     private UtentiService utentiService;
 
-    @PostMapping("/register")
+    /*@PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public UtentiResponseDTO save(@RequestBody @Validated UtentiPayloadDTO body, BindingResult validationResult) {
 
@@ -39,7 +39,7 @@ public class UtentiController {
 
             return new UtentiResponseDTO(this.utentiService.saveUtente(body).getId());
         }
-    }
+    }*/
 
     @GetMapping
     public Page<Utente> findAll(@RequestParam(defaultValue = "0") int page,

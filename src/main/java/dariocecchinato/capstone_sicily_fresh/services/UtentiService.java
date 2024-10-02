@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,12 +25,14 @@ public class UtentiService {
     private UtentiRepository utentiRepository;
     @Autowired
     private Cloudinary cloudinary;
+    @Autowired
+    private PasswordEncoder bcrypt;
 
     public Utente saveUtente(UtentiPayloadDTO body) {
         if (utentiRepository.existsByEmail(body.email()))
             throw new BadRequestException("L' email " + body.email() + " è già in uso");
         String avatar = "https://ui-avatars.com/api/?name=" + body.nome() + "+" + body.cognome();
-        Utente newUtente = new Utente(body.email(), body.password(),body.nome(),body.cognome(),body.username(), body.dataDiNascita(), avatar, body.ruolo());
+        Utente newUtente = new Utente(body.email(), bcrypt.encode(body.password()),body.nome(),body.cognome(),body.username(), body.dataDiNascita(), avatar, body.ruolo());
         Utente utenteSalvato = this.utentiRepository.save(newUtente);
 
         return utenteSalvato;
@@ -71,5 +74,8 @@ public class UtentiService {
         System.out.println("Url " + url);
         found.setAvatar(url);
         return this.utentiRepository.save(found);
+    }
+    public Utente findByEmail(String email) {
+        return this.utentiRepository.findByEmail(email).orElseThrow(() -> new NotFoundException(email));
     }
 }
