@@ -11,6 +11,7 @@ import dariocecchinato.capstone_sicily_fresh.services.UtentiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,7 +52,7 @@ public class RicettaController {
         return found;
     }
 
-    @PutMapping("/{ricettaId}")
+    /*@PutMapping("/{ricettaId}")
     public Ricetta findByIdAndUpdate(@PathVariable UUID ricettaId, @RequestBody @Validated RicettePayloadDTO body){
         Utente fornitore = utentiService.findUtenteById(body.fornitoreId());
 
@@ -85,6 +86,16 @@ public class RicettaController {
         }
         found.setRicettaIngredienti(nuovaListaRicettaIngredienti);
         return found;
+    }*/
+
+    @PutMapping("/{ricettaId}")
+    public Ricetta findByIdAndUpdate(@PathVariable UUID ricettaId, @RequestBody @Validated RicettePayloadDTO body, BindingResult validation){
+        if (validation.hasErrors()) {
+            String messages = validation.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).collect(Collectors.joining(". "));
+
+            throw new BadRequestException("ci sono stati errori nel payload: " + messages);
+        }
+        return this.ricetteService.aggiornaRicetta(ricettaId,body);
     }
 
     @DeleteMapping("/{ricettaId}")

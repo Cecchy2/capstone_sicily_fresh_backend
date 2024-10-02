@@ -1,6 +1,7 @@
 package dariocecchinato.capstone_sicily_fresh.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -21,6 +22,7 @@ public class RicettaIngrediente {
 
     @ManyToOne
     @JoinColumn(name = "id_ricetta")
+    @JsonIgnore
     private Ricetta ricetta;
 
     @ManyToOne

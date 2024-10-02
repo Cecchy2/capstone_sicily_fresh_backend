@@ -88,6 +88,65 @@ public class RicetteService {
         return savedRicetta;
     }
 
+    public Ricetta aggiornaRicetta(UUID ricettaId, RicettePayloadDTO body) {
+
+        Ricetta ricettaEsistente = ricetteRepository.findById(ricettaId)
+                .orElseThrow(() -> new NotFoundException("Ricetta non trovata con id: " + ricettaId));
+
+        if (!ricettaEsistente.getTitolo().equals(body.titolo()) && ricetteRepository.existsByTitolo(body.titolo())) {
+            throw new BadRequestException("La ricetta " + body.titolo() + " è già presente");
+        }
+
+        Utente fornitore = utentiService.findUtenteById(body.fornitoreId());
+        if (fornitore == null) {
+            throw new BadRequestException("Il fornitore non è stato trovato con l'id: " + body.fornitoreId());
+        }
+
+        ricettaEsistente.setTitolo(body.titolo());
+        ricettaEsistente.setDescrizione(body.descrizione());
+        ricettaEsistente.setImmaginePiatto(body.immaginePiatto() != null ? body.immaginePiatto() : "https://placehold.co/600x400");
+        ricettaEsistente.setDifficolta(body.difficolta());
+        ricettaEsistente.setTempo(body.tempo());
+        ricettaEsistente.setValoriNutrizionali(body.valoriNutrizionali());
+        ricettaEsistente.setFornitore(fornitore);
+
+        if (body.passaggi() != null && !body.passaggi().isEmpty()) {
+            passaggiDiPreparazioneRepository.deleteAll(ricettaEsistente.getPassaggi());
+
+            List<PassaggioDiPreparazione> passaggi = body.passaggi().stream()
+                    .map(passaggioDTO -> {
+                        PassaggioDiPreparazione passaggio = new PassaggioDiPreparazione();
+                        passaggio.setDescrizione(passaggioDTO.descrizione());
+                        passaggio.setImmaginePassaggio(passaggioDTO.immaginePassaggio());
+                        passaggio.setOrdinePassaggio(passaggioDTO.ordinePassaggio());
+                        passaggio.setRicetta(ricettaEsistente);
+                        return passaggiDiPreparazioneRepository.save(passaggio);
+                    })
+                    .collect(Collectors.toList());
+
+            ricettaEsistente.setPassaggi(passaggi);
+        }
+
+        if (body.ingredienti() != null && !body.ingredienti().isEmpty()) {
+            ricetteIngredientiRepository.deleteAll(ricettaEsistente.getRicettaIngredienti());
+
+            List<RicettaIngrediente> ricettaIngredienti = body.ingredienti().stream()
+                    .map(ingredienteDTO -> {
+                        Ingrediente ingrediente = ingredientiService.findByNome(ingredienteDTO.nome());
+
+                        RicettaIngrediente ricettaIngrediente = new RicettaIngrediente();
+                        ricettaIngrediente.setRicetta(ricettaEsistente);
+                        ricettaIngrediente.setIngrediente(ingrediente);
+                        ricettaIngrediente.setQuantita(ingredienteDTO.quantita());
+                        return ricetteIngredientiRepository.save(ricettaIngrediente);
+                    })
+                    .collect(Collectors.toList());
+
+            ricettaEsistente.setRicettaIngredienti(ricettaIngredienti);
+        }
+        return ricetteRepository.save(ricettaEsistente);
+    }
+
     public Page<Ricetta> findAll (int page, int size, String sortBy){
         if (page> 10) page=10;
         Pageable pageable = PageRequest.of(page,size, Sort.by(sortBy));
