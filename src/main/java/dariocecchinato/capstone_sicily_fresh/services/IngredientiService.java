@@ -1,5 +1,7 @@
 package dariocecchinato.capstone_sicily_fresh.services;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import dariocecchinato.capstone_sicily_fresh.entities.Ingrediente;
 import dariocecchinato.capstone_sicily_fresh.exceptions.BadRequestException;
 import dariocecchinato.capstone_sicily_fresh.exceptions.NotFoundException;
@@ -12,13 +14,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.UUID;
 
 @Service
 public class IngredientiService {
     @Autowired
     private IngredientiRepository ingredientiRepository;
+    @Autowired
+    private Cloudinary cloudinary;
 
     public Page<Ingrediente> findAll(int page, int size, String sortby) {
         if (page > 10) page = 10;
@@ -54,5 +60,14 @@ public class IngredientiService {
 
     public Ingrediente findByNome (String nome){
         return ingredientiRepository.findByNome(nome).orElseThrow(()->new NotFoundException("Ingrediente" + nome + " non trovato"));
+    }
+
+    public Ingrediente  uploadImmagine(UUID ingredienteId, MultipartFile immagine) throws IOException{
+        Ingrediente found= this.findById(ingredienteId);
+        String url = (String) cloudinary.uploader().upload(immagine.getBytes(), ObjectUtils.emptyMap()).get("url");
+        System.out.println("Url " + url);
+        found.setImmagine(url);
+        return this.ingredientiRepository.save(found);
+
     }
 }

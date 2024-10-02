@@ -12,7 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -65,6 +67,11 @@ public class IngredientiController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void findByIdAndDelete (@PathVariable UUID ingredienteId){
         this.ingredientiService.findByIdAndDelete(ingredienteId);
+    }
+
+    @PatchMapping("/{ingredienteId}/immagine")
+    public Ingrediente uploadImmagine(@PathVariable UUID ingredienteId, @RequestParam("immagine")MultipartFile immagine) throws IOException{
+        return  this.ingredientiService.uploadImmagine(ingredienteId,immagine);
     }
 }
 
