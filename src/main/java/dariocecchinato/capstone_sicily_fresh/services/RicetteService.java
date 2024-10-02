@@ -1,11 +1,11 @@
 package dariocecchinato.capstone_sicily_fresh.services;
 
-import dariocecchinato.capstone_sicily_fresh.entities.PassaggioDiPreparazione;
-import dariocecchinato.capstone_sicily_fresh.entities.Ricetta;
-import dariocecchinato.capstone_sicily_fresh.entities.Utente;
+import dariocecchinato.capstone_sicily_fresh.entities.*;
 import dariocecchinato.capstone_sicily_fresh.exceptions.BadRequestException;
 import dariocecchinato.capstone_sicily_fresh.exceptions.NotFoundException;
 import dariocecchinato.capstone_sicily_fresh.payloads.RicettePayloadDTO;
+import dariocecchinato.capstone_sicily_fresh.repositories.PassaggiDiPreparazioneRepository;
+import dariocecchinato.capstone_sicily_fresh.repositories.RicetteIngredientiRepository;
 import dariocecchinato.capstone_sicily_fresh.repositories.RicetteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,6 +24,12 @@ public class RicetteService {
     private RicetteRepository ricetteRepository;
     @Autowired
     private UtentiService utentiService;
+    @Autowired
+    private PassaggiDiPreparazioneRepository passaggiDiPreparazioneRepository;
+    @Autowired
+    private RicetteIngredientiRepository ricetteIngredientiRepository;
+    @Autowired
+    private IngredientiService ingredientiService;
 
     public Ricetta salvaRicetta(RicettePayloadDTO body) {
 
@@ -55,15 +61,31 @@ public class RicetteService {
                         passaggio.setDescrizione(passaggioDTO.descrizione());
                         passaggio.setImmaginePassaggio(passaggioDTO.immaginePassaggio());
                         passaggio.setOrdinePassaggio(passaggioDTO.ordinePassaggio());
-                        passaggio.setRicetta(savedRicetta); // Associa il passaggio alla ricetta
-                        return passaggio;
+                        passaggio.setRicetta(savedRicetta);
+                        return passaggiDiPreparazioneRepository.save(passaggio);
                     })
                     .collect(Collectors.toList());
 
             savedRicetta.setPassaggi(passaggi);
         }
 
-        return ricetteRepository.save(savedRicetta);
+        if (body.ingredienti() != null && !body.ingredienti().isEmpty()) {
+            List<RicettaIngrediente> ricettaIngredienti = body.ingredienti().stream()
+                    .map(ingredienteDTO -> {
+                        Ingrediente ingrediente = ingredientiService.findByNome(ingredienteDTO.nome());
+
+                        RicettaIngrediente ricettaIngrediente = new RicettaIngrediente();
+                        ricettaIngrediente.setRicetta(savedRicetta);
+                        ricettaIngrediente.setIngrediente(ingrediente);
+                        ricettaIngrediente.setQuantita(ingredienteDTO.quantita());
+                        return ricetteIngredientiRepository.save(ricettaIngrediente);
+                    })
+                    .collect(Collectors.toList());
+
+            savedRicetta.setRicettaIngredienti(ricettaIngredienti);
+        }
+
+        return savedRicetta;
     }
 
     public Page<Ricetta> findAll (int page, int size, String sortBy){

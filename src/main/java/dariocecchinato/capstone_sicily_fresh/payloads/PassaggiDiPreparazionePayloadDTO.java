@@ -1,10 +1,10 @@
 package dariocecchinato.capstone_sicily_fresh.payloads;
 
-import dariocecchinato.capstone_sicily_fresh.entities.Ricetta;
+
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.UUID;
+
 
 public record PassaggiDiPreparazionePayloadDTO(
         @NotEmpty(message = "La descrizione del passaggio non può essere vuota")

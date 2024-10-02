@@ -5,16 +5,14 @@ import dariocecchinato.capstone_sicily_fresh.entities.Ricetta;
 import dariocecchinato.capstone_sicily_fresh.entities.RicettaIngrediente;
 import dariocecchinato.capstone_sicily_fresh.payloads.RicetteIngredientiPayloadDTO;
 import dariocecchinato.capstone_sicily_fresh.payloads.RicetteIngredientoResponseDTO;
-import dariocecchinato.capstone_sicily_fresh.payloads.RicetteResponseDTO;
-import dariocecchinato.capstone_sicily_fresh.repositories.RicettaIngredientiRepository;
+import dariocecchinato.capstone_sicily_fresh.repositories.RicetteIngredientiRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 @Service
 public class RicetteIngredientiService {
     @Autowired
-    private RicettaIngredientiRepository ricettaIngredientiRepository;
+    private RicetteIngredientiRepository ricettaIngredientiRepository;
     @Autowired
     private RicetteService ricetteService;
     @Autowired
