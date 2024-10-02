@@ -2,7 +2,6 @@ package dariocecchinato.capstone_sicily_fresh.controllers;
 
 import dariocecchinato.capstone_sicily_fresh.entities.*;
 import dariocecchinato.capstone_sicily_fresh.exceptions.BadRequestException;
-import dariocecchinato.capstone_sicily_fresh.payloads.IngredientiPayloadDTO;
 import dariocecchinato.capstone_sicily_fresh.payloads.RicettePayloadDTO;
 import dariocecchinato.capstone_sicily_fresh.payloads.RicetteResponseDTO;
 import dariocecchinato.capstone_sicily_fresh.services.IngredientiService;
@@ -15,8 +14,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -51,42 +48,6 @@ public class RicettaController {
         Ricetta found = this.ricetteService.findById(ricettaId);
         return found;
     }
-
-    /*@PutMapping("/{ricettaId}")
-    public Ricetta findByIdAndUpdate(@PathVariable UUID ricettaId, @RequestBody @Validated RicettePayloadDTO body){
-        Utente fornitore = utentiService.findUtenteById(body.fornitoreId());
-
-        Ricetta found = this.ricetteService.findById(ricettaId);
-        found.setTitolo(body.titolo());
-        found.setDescrizione(body.descrizione());
-        found.setImmaginePiatto(body.immaginePiatto());
-        found.setDifficolta(body.difficolta());
-        found.setTempo(body.tempo());
-        found.setValoriNutrizionali(body.valoriNutrizionali());
-        found.setFornitore(fornitore);
-
-        List<PassaggioDiPreparazione> passaggi = body.passaggi().stream()
-                .map(passaggiDto -> {
-                    PassaggioDiPreparazione passaggio = new PassaggioDiPreparazione();
-                    passaggio.setDescrizione(passaggiDto.descrizione());
-                    passaggio.setImmaginePassaggio(passaggiDto.immaginePassaggio());
-                    passaggio.setRicetta(found);
-                    return passaggio;
-                }).collect(Collectors.toList());
-        found.setPassaggi(passaggi);
-
-        List<RicettaIngrediente> nuovaListaRicettaIngredienti = new ArrayList<>();
-        for (IngredientiPayloadDTO ingredienteDto : body.ingredienti()) {
-            Ingrediente ingrediente = this.ingredientiService.findByNome(ingredienteDto.nome());
-            if (ingrediente == null) {
-                throw new BadRequestException("Ingrediente non trovato: " + ingredienteDto.nome());
-            }
-            RicettaIngrediente ricettaIngrediente = new RicettaIngrediente(found, ingrediente, ingredienteDto.quantita());
-            nuovaListaRicettaIngredienti.add(ricettaIngrediente);
-        }
-        found.setRicettaIngredienti(nuovaListaRicettaIngredienti);
-        return found;
-    }*/
 
     @PutMapping("/{ricettaId}")
     public Ricetta findByIdAndUpdate(@PathVariable UUID ricettaId, @RequestBody @Validated RicettePayloadDTO body, BindingResult validation){
