@@ -6,6 +6,7 @@ import dariocecchinato.capstone_sicily_fresh.payloads.RicetteIngredientoResponse
 import dariocecchinato.capstone_sicily_fresh.services.RicetteIngredientiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ public class RicetteIngredientiController {
 
 
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'FORNITORE')")
     @ResponseStatus(HttpStatus.CREATED)
     public RicetteIngredientoResponseDTO save(@RequestBody @Validated RicetteIngredientiPayloadDTO body, BindingResult validation){
         if (validation.hasErrors()) {

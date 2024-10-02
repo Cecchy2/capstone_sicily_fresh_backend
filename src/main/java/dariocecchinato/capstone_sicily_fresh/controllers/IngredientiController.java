@@ -9,6 +9,7 @@ import dariocecchinato.capstone_sicily_fresh.services.IngredientiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,7 @@ public class IngredientiController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'FORNITORE')")
     public IngredientiResponseDTO creaIngrediente (@RequestBody @Validated IngredientiPayloadDTO body, BindingResult validationResult){
         if (validationResult.hasErrors()) {
             String messages = validationResult.getAllErrors().stream()
@@ -38,6 +40,7 @@ public class IngredientiController {
         }
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'FORNITORE', 'CLIENTE')")
     public Page<Ingrediente> findAll (@RequestParam(defaultValue = "0") int page,
                                       @RequestParam(defaultValue = "10") int size,
                                       @RequestParam(defaultValue = "id") String sortby){
@@ -45,6 +48,7 @@ public class IngredientiController {
         }
 
     @GetMapping("/{ingredienteId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'FORNITORE', 'CLIENTE')")
     public Ingrediente findById (@PathVariable UUID ingredienteId){
             Ingrediente found = this.ingredientiService.findById(ingredienteId);
             if (found == null) throw new NotFoundException(ingredienteId);
@@ -52,6 +56,7 @@ public class IngredientiController {
         }
 
     @PutMapping("/{ingredienteId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'FORNITORE')")
     public Ingrediente findByIdAndUpdate(@PathVariable UUID ingredienteId, @RequestBody @Validated IngredientiPayloadDTO body, BindingResult validationResult){
             if (validationResult.hasErrors()) {
                 String messages = validationResult.getAllErrors().stream()
@@ -64,12 +69,14 @@ public class IngredientiController {
         }
 
     @DeleteMapping("/{ingredienteId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'FORNITORE')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void findByIdAndDelete (@PathVariable UUID ingredienteId){
         this.ingredientiService.findByIdAndDelete(ingredienteId);
     }
 
     @PatchMapping("/{ingredienteId}/immagine")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'FORNITORE')")
     public Ingrediente uploadImmagine(@PathVariable UUID ingredienteId, @RequestParam("immagine")MultipartFile immagine) throws IOException{
         return  this.ingredientiService.uploadImmagine(ingredienteId,immagine);
     }

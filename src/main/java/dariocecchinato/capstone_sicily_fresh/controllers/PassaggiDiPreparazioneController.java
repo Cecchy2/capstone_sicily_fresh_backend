@@ -8,6 +8,7 @@ import dariocecchinato.capstone_sicily_fresh.services.PassaggiDiPreparazioneServ
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,7 @@ public class PassaggiDiPreparazioneController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'FORNITORE')")
     public PassaggiDiPreparazioneResponseDTO creaPassaggio(@RequestBody PassaggiDiPreparazionePayloadDTO body){
         String immagine = "https://placehold.co/400";
         PassaggioDiPreparazione passaggio = new PassaggioDiPreparazione(body.descrizione(), immagine,body.ordinePassaggio());
@@ -34,6 +36,7 @@ public class PassaggiDiPreparazioneController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'FORNITORE', 'CLIENTE')")
     public Page<PassaggioDiPreparazione> findAll (@RequestParam(defaultValue = "0") int page,
                                                   @RequestParam(defaultValue = "15") int size,
                                                   @RequestParam(defaultValue = "id") String sortBy){
@@ -46,6 +49,7 @@ public class PassaggiDiPreparazioneController {
     }
 
     @PutMapping("/{passaggioDiPreparazioneId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'FORNITORE')")
     public PassaggioDiPreparazione findByIdAndUpdate (@PathVariable UUID passaggioDiPreparazioneId, @RequestBody @Validated PassaggiDiPreparazionePayloadDTO body, BindingResult validation) {
         if (validation.hasErrors()) {
             String messages = validation.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).collect(Collectors.joining(". "));
@@ -56,12 +60,14 @@ public class PassaggiDiPreparazioneController {
     }
 
     @DeleteMapping("/{passaggioDiPreparazioneId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'FORNITORE')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void findByIdAndDelete(@PathVariable UUID passaggioDiPreparazioneId) {
         this.passaggiDiPreparazioneService.findByIdAndDelete(passaggioDiPreparazioneId);
     }
 
     @PatchMapping("/{passaggioDiPreparazioneId}/immaginePassaggio")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'FORNITORE')")
     public PassaggioDiPreparazione uploadImmagginePassaggio(@PathVariable UUID passaggioDiPreparazioneId, @RequestParam("immaginePassaggio")MultipartFile immaginePassaggio) throws IOException{
         return this.passaggiDiPreparazioneService.uploadimmaginePassaggio(passaggioDiPreparazioneId,immaginePassaggio);
     }
