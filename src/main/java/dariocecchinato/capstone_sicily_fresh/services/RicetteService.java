@@ -3,6 +3,7 @@ package dariocecchinato.capstone_sicily_fresh.services;
 import dariocecchinato.capstone_sicily_fresh.entities.*;
 import dariocecchinato.capstone_sicily_fresh.exceptions.BadRequestException;
 import dariocecchinato.capstone_sicily_fresh.exceptions.NotFoundException;
+import dariocecchinato.capstone_sicily_fresh.payloads.IngredientiPayloadDTO;
 import dariocecchinato.capstone_sicily_fresh.payloads.RicettePayloadDTO;
 import dariocecchinato.capstone_sicily_fresh.repositories.PassaggiDiPreparazioneRepository;
 import dariocecchinato.capstone_sicily_fresh.repositories.RicetteIngredientiRepository;
@@ -54,6 +55,7 @@ public class RicetteService {
 
         Ricetta savedRicetta = ricetteRepository.save(ricetta);
 
+        // Salvataggio dei passaggi di preparazione
         if (body.passaggi() != null && !body.passaggi().isEmpty()) {
             List<PassaggioDiPreparazione> passaggi = body.passaggi().stream()
                     .map(passaggioDTO -> {
@@ -69,11 +71,28 @@ public class RicetteService {
             savedRicetta.setPassaggi(passaggi);
         }
 
-        if (body.ingredienti() != null && !body.ingredienti().isEmpty()) {
-            List<RicettaIngrediente> ricettaIngredienti = body.ingredienti().stream()
+        // Salvataggio degli ingredienti e dei RicettaIngredienti
+        if (body.Ricettaingredienti() != null && !body.Ricettaingredienti().isEmpty()) {
+            List<RicettaIngrediente> ricettaIngredienti = body.Ricettaingredienti().stream()
                     .map(ingredienteDTO -> {
-                        Ingrediente ingrediente = ingredientiService.findByNome(ingredienteDTO.nome());
+                        // Trova o crea un nuovo ingrediente
+                        Ingrediente ingrediente;
+                        try {
+                            // Prova a trovare l'ingrediente per nome
+                            ingrediente = ingredientiService.findByNome(ingredienteDTO.nome());
+                        } catch (NotFoundException e) {
+                            // Se l'ingrediente non esiste, crea un IngredientePayloadDTO
+                            IngredientiPayloadDTO ingredientePayloadDTO = new IngredientiPayloadDTO(
+                                    ingredienteDTO.nome(),
+                                    ingredienteDTO.descrizione(),
+                                    ingredienteDTO.valoriNutrizionali(),
+                                    ingredienteDTO.immagine() != null ? ingredienteDTO.immagine() : "https://placehold.co/600x400"
+                            );
+                            // Salva il nuovo ingrediente usando saveIngrediente()
+                            ingrediente = ingredientiService.saveIngrediente(ingredientePayloadDTO);
+                        }
 
+                        // Crea RicettaIngrediente e lo salva
                         RicettaIngrediente ricettaIngrediente = new RicettaIngrediente();
                         ricettaIngrediente.setRicetta(savedRicetta);
                         ricettaIngrediente.setIngrediente(ingrediente);
@@ -87,6 +106,10 @@ public class RicetteService {
 
         return savedRicetta;
     }
+
+
+
+
 
     public Ricetta aggiornaRicetta(UUID ricettaId, RicettePayloadDTO body) {
 
@@ -110,6 +133,7 @@ public class RicetteService {
         ricettaEsistente.setValoriNutrizionali(body.valoriNutrizionali());
         ricettaEsistente.setFornitore(fornitore);
 
+        // Aggiornamento dei passaggi di preparazione
         if (body.passaggi() != null && !body.passaggi().isEmpty()) {
             passaggiDiPreparazioneRepository.deleteAll(ricettaEsistente.getPassaggi());
 
@@ -127,13 +151,28 @@ public class RicetteService {
             ricettaEsistente.setPassaggi(passaggi);
         }
 
-        if (body.ingredienti() != null && !body.ingredienti().isEmpty()) {
+        // Aggiornamento degli ingredienti della ricetta
+        if (body.Ricettaingredienti() != null && !body.Ricettaingredienti().isEmpty()) {
             ricetteIngredientiRepository.deleteAll(ricettaEsistente.getRicettaIngredienti());
 
-            List<RicettaIngrediente> ricettaIngredienti = body.ingredienti().stream()
+            List<RicettaIngrediente> ricettaIngredienti = body.Ricettaingredienti().stream()
                     .map(ingredienteDTO -> {
-                        Ingrediente ingrediente = ingredientiService.findByNome(ingredienteDTO.nome());
+                        Ingrediente ingrediente;
+                        try {
+                            // Trova l'ingrediente per nome
+                            ingrediente = ingredientiService.findByNome(ingredienteDTO.nome());
+                        } catch (NotFoundException e) {
+                            // Se l'ingrediente non esiste, creane uno nuovo utilizzando un IngredientiPayloadDTO
+                            IngredientiPayloadDTO ingredientePayloadDTO = new IngredientiPayloadDTO(
+                                    ingredienteDTO.nome(),
+                                    ingredienteDTO.descrizione(),
+                                    ingredienteDTO.valoriNutrizionali(),
+                                    ingredienteDTO.immagine() != null ? ingredienteDTO.immagine() : "https://placehold.co/600x400"
+                            );
+                            ingrediente = ingredientiService.saveIngrediente(ingredientePayloadDTO);
+                        }
 
+                        // Crea RicettaIngrediente e lo salva
                         RicettaIngrediente ricettaIngrediente = new RicettaIngrediente();
                         ricettaIngrediente.setRicetta(ricettaEsistente);
                         ricettaIngrediente.setIngrediente(ingrediente);
@@ -144,8 +183,11 @@ public class RicetteService {
 
             ricettaEsistente.setRicettaIngredienti(ricettaIngredienti);
         }
+
         return ricetteRepository.save(ricettaEsistente);
     }
+
+
 
     public Page<Ricetta> findAll (int page, int size, String sortBy){
         if (page> 10) page=10;

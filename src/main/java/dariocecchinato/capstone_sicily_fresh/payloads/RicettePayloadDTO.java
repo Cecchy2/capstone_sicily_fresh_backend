@@ -27,5 +27,5 @@ public record RicettePayloadDTO(
         @NotEmpty(message = "I passaggi di preparazione non possono essere vuoti")
         List<PassaggiDiPreparazionePayloadDTO> passaggi,
         @NotEmpty(message = "La lista degli ingredienti non può essere vuota")
-        List<IngredientiPayloadDTO> ingredienti) {
+        List<RicetteIngredientiPayloadDTO> Ricettaingredienti) {
 }
