@@ -15,7 +15,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -92,5 +94,11 @@ public class RicettaController {
             throw new BadRequestException("Non hai l'autorizzazione per cancellare questa ricetta.");
         }
         ricetteService.findByIdAndDelete(ricettaId);
+    }
+
+    @PatchMapping("/{ricettaId}/immaginePiatto")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'FORNITORE')")
+    public Ricetta uploadImmagginePiatto(@PathVariable UUID ricettaId, @RequestParam("immaginePiatto") MultipartFile immaginePiatto) throws IOException {
+        return this.ricetteService.uploadimmaginePiatto(ricettaId,immaginePiatto);
     }
 }

@@ -1,5 +1,7 @@
 package dariocecchinato.capstone_sicily_fresh.services;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import dariocecchinato.capstone_sicily_fresh.entities.*;
 import dariocecchinato.capstone_sicily_fresh.exceptions.BadRequestException;
 import dariocecchinato.capstone_sicily_fresh.exceptions.NotFoundException;
@@ -14,7 +16,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -31,6 +35,8 @@ public class RicetteService {
     private RicetteIngredientiRepository ricetteIngredientiRepository;
     @Autowired
     private IngredientiService ingredientiService;
+    @Autowired
+    private Cloudinary cloudinary;
 
     public Ricetta salvaRicetta(RicettePayloadDTO body) {
 
@@ -55,7 +61,7 @@ public class RicetteService {
 
         Ricetta savedRicetta = ricetteRepository.save(ricetta);
 
-    // ************************************** Mi salvo i passaggi di preparazione************
+
         if (body.passaggi() != null && !body.passaggi().isEmpty()) {
             List<PassaggioDiPreparazione> passaggi = body.passaggi().stream()
                     .map(passaggioDTO -> {
@@ -71,28 +77,28 @@ public class RicetteService {
             savedRicetta.setPassaggi(passaggi);
         }
 
-    // ************************************** Salvo gli ingredienti e i RicettaIngredienti ********************************
+
         if (body.Ricettaingredienti() != null && !body.Ricettaingredienti().isEmpty()) {
             List<RicettaIngrediente> ricettaIngredienti = body.Ricettaingredienti().stream()
                     .map(ingredienteDTO -> {
-    // **************************************Trova un nuovo ingrediente sennò lo creo ********************************
+
                         Ingrediente ingrediente;
                         try {
-    // ************************************** Provo a trovare l'ingrediente per nome ********************************
+
                             ingrediente = ingredientiService.findByNome(ingredienteDTO.nome());
                         } catch (NotFoundException e) {
-    // ************************************** Se l'ingrediente non esiste, creo un IngredientePayloadDTO ********************************
+
                             IngredientiPayloadDTO ingredientePayloadDTO = new IngredientiPayloadDTO(
                                     ingredienteDTO.nome(),
                                     ingredienteDTO.descrizione(),
                                     ingredienteDTO.valoriNutrizionali(),
                                     ingredienteDTO.immagine() != null ? ingredienteDTO.immagine() : "https://placehold.co/600x400"
                             );
-    // *************************************** Salvo il nuovo ingrediente usando saveIngrediente()********************************
+
                             ingrediente = ingredientiService.saveIngrediente(ingredientePayloadDTO);
                         }
 
-    // *************************************** Creo RicettaIngrediente e lo salvo****************************************************************
+
                         RicettaIngrediente ricettaIngrediente = new RicettaIngrediente();
                         ricettaIngrediente.setRicetta(savedRicetta);
                         ricettaIngrediente.setIngrediente(ingrediente);
@@ -133,7 +139,6 @@ public class RicetteService {
         ricettaEsistente.setValoriNutrizionali(body.valoriNutrizionali());
         ricettaEsistente.setFornitore(fornitore);
 
-        //******************************** Aggiornamento dei passaggi di preparazione ****************************************************************
         if (body.passaggi() != null && !body.passaggi().isEmpty()) {
             passaggiDiPreparazioneRepository.deleteAll(ricettaEsistente.getPassaggi());
 
@@ -150,8 +155,6 @@ public class RicetteService {
 
             ricettaEsistente.setPassaggi(passaggi);
         }
-
-    //******************************** Aggiornamento degli ingredienti della ricetta ****************************************************************
         if (body.Ricettaingredienti() != null && !body.Ricettaingredienti().isEmpty()) {
             ricetteIngredientiRepository.deleteAll(ricettaEsistente.getRicettaIngredienti());
 
@@ -159,10 +162,10 @@ public class RicetteService {
                     .map(ingredienteDTO -> {
                         Ingrediente ingrediente;
                         try {
-    //******************************** Trova l'ingrediente per nome************************************************************************************************
+
                             ingrediente = ingredientiService.findByNome(ingredienteDTO.nome());
                         } catch (NotFoundException e) {
-    //******************************** Se l'ingrediente non esiste, creane uno nuovo utilizzando un IngredientiPayloadDTO********************************
+
                             IngredientiPayloadDTO ingredientePayloadDTO = new IngredientiPayloadDTO(
                                     ingredienteDTO.nome(),
                                     ingredienteDTO.descrizione(),
@@ -172,7 +175,7 @@ public class RicetteService {
                             ingrediente = ingredientiService.saveIngrediente(ingredientePayloadDTO);
                         }
 
-    //******************************** Crea RicettaIngrediente e lo salva ****************************************************************
+
                         RicettaIngrediente ricettaIngrediente = new RicettaIngrediente();
                         ricettaIngrediente.setRicetta(ricettaEsistente);
                         ricettaIngrediente.setIngrediente(ingrediente);
@@ -202,5 +205,14 @@ public class RicetteService {
     public void findByIdAndDelete(UUID ricettaId){
         Ricetta found = this.findById(ricettaId);
         this.ricetteRepository.delete(found);
+    }
+
+    public Ricetta uploadimmaginePiatto (UUID ricettaId, MultipartFile immaginePiatto) throws IOException {
+        Ricetta found= this.ricetteRepository.findById(ricettaId).orElseThrow(()->new NotFoundException(ricettaId));
+        String url = (String) cloudinary.uploader().upload(immaginePiatto.getBytes(), ObjectUtils.emptyMap()).get("url");
+        System.out.println("Url " + url);
+        found.setImmaginePiatto(url);
+        return this.ricetteRepository.save(found);
+
     }
 }
