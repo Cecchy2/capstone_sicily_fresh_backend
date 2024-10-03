@@ -7,8 +7,7 @@ import dariocecchinato.capstone_sicily_fresh.payloads.IngredientiPayloadDTO;
 import dariocecchinato.capstone_sicily_fresh.payloads.RicetteIngredientiPayloadDTO;
 import dariocecchinato.capstone_sicily_fresh.payloads.RicetteIngredientoResponseDTO;
 import dariocecchinato.capstone_sicily_fresh.repositories.RicetteIngredientiRepository;
-import dariocecchinato.capstone_sicily_fresh.services.IngredientiService;
-import dariocecchinato.capstone_sicily_fresh.services.RicetteService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
