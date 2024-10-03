@@ -84,22 +84,26 @@ public class UtentiController {
     }
 
     @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
     public Utente getProfile(@AuthenticationPrincipal Utente currentAuthenticatedUser) {
         return currentAuthenticatedUser;
     }
 
     @PutMapping("/me")
+    @PreAuthorize("isAuthenticated()")
     public Utente updateProfile(@AuthenticationPrincipal Utente currentAuthenticatedUser, @RequestBody UtentiPayloadDTO body) {
         return this.utentiService.findByIdAndUpdate(currentAuthenticatedUser.getId(), body);
     }
 
     @DeleteMapping("/me")
+    @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteProfile(@AuthenticationPrincipal Utente currentAuthenticatedUser) {
         this.utentiService.findByIdAndDeleteUtente(currentAuthenticatedUser.getId());
     }
 
     @PatchMapping("/me")
+    @PreAuthorize("isAuthenticated()")
     public Utente uploadAvatarPic(@AuthenticationPrincipal Utente utente, @RequestParam("avatar") MultipartFile avatar) throws IOException {
         return this.utentiService.uploadAvatar(utente.getId(), avatar);
     }
