@@ -58,7 +58,7 @@ public class UtentiController {
     }
 
     @PutMapping("/{utenteId}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CLIENTE', 'FORNITORE')")
     public Utente findByIdAndUpdate(@PathVariable UUID utenteId, @RequestBody @Validated UtentiPayloadDTO body, BindingResult validationResult) {
         if (validationResult.hasErrors()) {
             String message = validationResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).collect(Collectors.joining(". "));
@@ -76,7 +76,7 @@ public class UtentiController {
     }
 
     @PatchMapping("/{utenteId}/avatar")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CLIENTE', 'FORNITORE')")
     public Utente uploadAvatar(@PathVariable UUID utenteId, @RequestParam("avatar") MultipartFile avatar) throws IOException {
         //return this.clienteService.uploadLogoAziendale(clienteId, avatar);
         return this.utentiService.uploadAvatar(utenteId,avatar);
