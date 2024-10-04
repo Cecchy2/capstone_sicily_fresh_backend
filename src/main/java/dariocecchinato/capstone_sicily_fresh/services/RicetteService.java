@@ -78,8 +78,8 @@ public class RicetteService {
         }
 
 
-        if (body.Ricettaingredienti() != null && !body.Ricettaingredienti().isEmpty()) {
-            List<RicettaIngrediente> ricettaIngredienti = body.Ricettaingredienti().stream()
+        if (body.ricetteIngredienti() != null && !body.ricetteIngredienti().isEmpty()) {
+            List<RicettaIngrediente> ricettaIngredienti = body.ricetteIngredienti().stream()
                     .map(ingredienteDTO -> {
 
                         Ingrediente ingrediente;
@@ -155,10 +155,10 @@ public class RicetteService {
 
             ricettaEsistente.setPassaggi(passaggi);
         }
-        if (body.Ricettaingredienti() != null && !body.Ricettaingredienti().isEmpty()) {
+        if (body.ricetteIngredienti() != null && !body.ricetteIngredienti().isEmpty()) {
             ricetteIngredientiRepository.deleteAll(ricettaEsistente.getRicettaIngredienti());
 
-            List<RicettaIngrediente> ricettaIngredienti = body.Ricettaingredienti().stream()
+            List<RicettaIngrediente> ricettaIngredienti = body.ricetteIngredienti().stream()
                     .map(ingredienteDTO -> {
                         Ingrediente ingrediente;
                         try {
