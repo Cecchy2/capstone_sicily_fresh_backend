@@ -14,7 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -34,19 +36,22 @@ public class AuthorizationController {
         return new UtenteLoginResponseDTO(this.authorizationsService.checkCredenzialiEGeneraToken(body),role, utenteId);
     }
 
-    @PostMapping("/register")
+    @PostMapping(value = "/register", consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.CREATED)
-    public UtentiResponseDTO save(@RequestBody @Validated UtentiPayloadDTO body, BindingResult validationResult) {
+    public UtentiResponseDTO save(
+            @Validated @ModelAttribute UtentiPayloadDTO body,
+            @RequestParam(value = "avatar", required = false) MultipartFile avatar,
+            BindingResult validationResult) throws IOException {
+
 
         if (validationResult.hasErrors()) {
             String messages = validationResult.getAllErrors().stream()
                     .map(objectError -> objectError.getDefaultMessage())
                     .collect(Collectors.joining(". "));
-
             throw new BadRequestException("Ci sono stati errori nel payload. " + messages);
-        } else {
-
-            return new UtentiResponseDTO(this.utentiService.saveUtente(body).getId());
         }
+        
+        Utente newUser = utentiService.saveUtente(body, avatar);
+        return new UtentiResponseDTO(newUser.getId());
     }
 }

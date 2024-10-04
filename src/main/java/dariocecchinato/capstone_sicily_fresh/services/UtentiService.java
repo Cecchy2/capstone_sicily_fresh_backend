@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -28,15 +29,30 @@ public class UtentiService {
     @Autowired
     private PasswordEncoder bcrypt;
 
-    public Utente saveUtente(UtentiPayloadDTO body) {
-        if (utentiRepository.existsByEmail(body.email()))
-            throw new BadRequestException("L' email " + body.email() + " è già in uso");
-        String avatar = "https://ui-avatars.com/api/?name=" + body.nome() + "+" + body.cognome();
-        Utente newUtente = new Utente(body.email(), bcrypt.encode(body.password()),body.nome(),body.cognome(),body.username(), body.dataDiNascita(), avatar, body.ruolo());
-        Utente utenteSalvato = this.utentiRepository.save(newUtente);
+    public Utente saveUtente(UtentiPayloadDTO body, MultipartFile avatar)throws IOException {
+       Utente newUtente = new Utente();
+       newUtente.setNome(body.nome());
+       newUtente.setCognome(body.cognome());
+       newUtente.setEmail(body.email());
+       newUtente.setUsername(body.username());
+       newUtente.setPassword(bcrypt.encode(body.password()));
+       newUtente.setDataDiNascita(body.dataDiNascita());
+       newUtente.setRuolo(body.ruolo());
 
-        return utenteSalvato;
+        newUtente = utentiRepository.save(newUtente);
+
+        if (avatar != null && !avatar.isEmpty()) {
+            Map<String, Object> uploadResult = cloudinary.uploader().upload(avatar.getBytes(), ObjectUtils.emptyMap());
+            String avatarUrl = (String) uploadResult.get("secure_url");
+            newUtente.setAvatar(avatarUrl);
+
+            newUtente = utentiRepository.save(newUtente);
+        }
+
+        return newUtente;
     }
+
+
 
     public Page<Utente> findAll (int page, int size, String sortBy){
         if (page > 100) page = 100;
