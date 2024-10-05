@@ -104,7 +104,7 @@ public class RicettaController {
         return this.ricetteService.uploadimmaginePiatto(ricettaId,immaginePiatto);
     }
 
-    @GetMapping("/{fornitoreId}")
+    @GetMapping("/get/{fornitoreId}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'FORNITORE')")
     public List<Ricetta> findRicetteByFornitoreId(@PathVariable UUID fornitoreId){
         return this.ricetteService.findRicetteByFornitoreId(fornitoreId);
