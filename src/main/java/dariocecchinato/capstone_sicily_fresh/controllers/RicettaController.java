@@ -37,6 +37,7 @@ public class RicettaController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ADMIN', 'FORNITORE')")
     public RicetteResponseDTO creaRicetta(@RequestBody @Validated RicettePayloadDTO body) {
+
         Ricetta savedRicetta = ricetteService.salvaRicetta(body);
         return new RicetteResponseDTO(savedRicetta.getId());
     }
