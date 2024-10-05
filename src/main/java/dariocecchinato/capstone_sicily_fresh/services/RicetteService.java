@@ -38,6 +38,7 @@ public class RicetteService {
     @Autowired
     private Cloudinary cloudinary;
 
+
     public Ricetta salvaRicetta(RicettePayloadDTO body) {
 
         if (ricetteRepository.existsByTitolo(body.titolo())) {
@@ -218,5 +219,9 @@ public class RicetteService {
         found.setImmaginePiatto(url);
         return this.ricetteRepository.save(found);
 
+    }
+
+    public List<Ricetta> findRicetteByFornitoreId (UUID fornitoreId){
+        return this.ricetteRepository.findRicetteByFornitoreId(fornitoreId);
     }
 }
