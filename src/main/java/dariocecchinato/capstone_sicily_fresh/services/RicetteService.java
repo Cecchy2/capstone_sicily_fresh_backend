@@ -204,6 +204,10 @@ public class RicetteService {
 
     public void findByIdAndDelete(UUID ricettaId){
         Ricetta found = this.findById(ricettaId);
+        List<RicettaIngrediente> ricettaIngredienti= found.getRicettaIngredienti();
+        List<PassaggioDiPreparazione> passaggi = found.getPassaggi();
+        this.passaggiDiPreparazioneRepository.deleteAll(passaggi);
+        this.ricetteIngredientiRepository.deleteAll(ricettaIngredienti);
         this.ricetteRepository.delete(found);
     }
 
