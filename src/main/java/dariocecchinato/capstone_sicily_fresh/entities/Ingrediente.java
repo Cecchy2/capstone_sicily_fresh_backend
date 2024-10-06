@@ -20,6 +20,7 @@ public class Ingrediente {
     @Setter(AccessLevel.NONE)
     private UUID id;
     private String nome;
+    @Column(columnDefinition = "TEXT")
     private String descrizione;
     private String valoriNutrizionali;
     private String immagine;

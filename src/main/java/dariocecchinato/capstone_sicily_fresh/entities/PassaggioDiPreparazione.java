@@ -19,7 +19,9 @@ public class PassaggioDiPreparazione {
     @Setter(AccessLevel.NONE)
     private UUID id;
 
+    @Column(columnDefinition = "TEXT")
     private String descrizione;
+    @Column(columnDefinition = "TEXT")
     private String immaginePassaggio;
 
     @ManyToOne

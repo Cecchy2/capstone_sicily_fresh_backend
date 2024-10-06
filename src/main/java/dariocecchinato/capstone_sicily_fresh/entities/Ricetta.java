@@ -19,8 +19,11 @@ public class Ricetta {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
     private UUID id;
+    @Column(columnDefinition = "TEXT")
     private String titolo;
+    @Column(columnDefinition = "TEXT")
     private String descrizione;
+    @Column(columnDefinition = "TEXT")
     private String immaginePiatto;
     @Enumerated(EnumType.STRING)
     private Difficolta difficolta;
