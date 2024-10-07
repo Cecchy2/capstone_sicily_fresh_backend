@@ -5,6 +5,7 @@ import dariocecchinato.capstone_sicily_fresh.exceptions.BadRequestException;
 import dariocecchinato.capstone_sicily_fresh.payloads.RicettePayloadDTO;
 import dariocecchinato.capstone_sicily_fresh.payloads.RicetteResponseDTO;
 import dariocecchinato.capstone_sicily_fresh.services.IngredientiService;
+import dariocecchinato.capstone_sicily_fresh.services.PassaggiDiPreparazioneService;
 import dariocecchinato.capstone_sicily_fresh.services.RicetteService;
 import dariocecchinato.capstone_sicily_fresh.services.UtentiService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,8 @@ public class RicettaController {
     private UtentiService utentiService;
     @Autowired
     private IngredientiService ingredientiService;
+    @Autowired
+    private PassaggiDiPreparazioneService passaggiDiPreparazioneService;
 
 
     @PostMapping
@@ -40,7 +43,8 @@ public class RicettaController {
     public RicetteResponseDTO creaRicetta(@RequestBody @Validated RicettePayloadDTO body) {
 
         Ricetta savedRicetta = ricetteService.salvaRicetta(body);
-        return new RicetteResponseDTO(savedRicetta.getId());
+        List<PassaggioDiPreparazione> passaggiId = this.passaggiDiPreparazioneService.findPassaggiByRicettaId(savedRicetta.getId());
+        return new RicetteResponseDTO(savedRicetta.getId(),passaggiId);
     }
 
     @GetMapping
