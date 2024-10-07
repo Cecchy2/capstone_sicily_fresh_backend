@@ -39,8 +39,10 @@ public class Utente  implements UserDetails {
     @OneToMany(mappedBy = "fornitore", cascade = CascadeType.ALL)
     @JsonBackReference
     private List<Ricetta> ricette;
-    @OneToMany(mappedBy = "utente", cascade = CascadeType.ALL)
-    private List<Ordine> ordini;
+
+    @OneToMany(mappedBy = "cliente")
+    @JsonBackReference
+    private List<Abbonamento> abbonamenti;
 
     public Utente(String email, String password, String nome, String cognome, String username, LocalDate dataDiNascita, String avatar, RuoloUtente ruolo) {
         this.email = email;

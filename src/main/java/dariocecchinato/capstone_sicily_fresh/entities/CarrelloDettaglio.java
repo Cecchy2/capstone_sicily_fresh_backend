@@ -12,25 +12,18 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-public class DettaglioOrdine {
-    @Setter(AccessLevel.NONE)
+public class CarrelloDettaglio {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Setter(AccessLevel.NONE)
     private UUID id;
+    @ManyToOne
+    @JoinColumn(name = "carrello_id")
+    private Carrello carrello;
 
     @ManyToOne
-    @JoinColumn(name = "id_ordine")
-    private Ordine ordine;
-
-    @ManyToOne
-    @JoinColumn(name = "id_ricetta")
+    @JoinColumn(name = "ricetta_id")
     private Ricetta ricetta;
 
     private int quantita;
-
-    public DettaglioOrdine(Ordine ordine, Ricetta ricetta, int quantita) {
-        this.ordine = ordine;
-        this.ricetta = ricetta;
-        this.quantita = quantita;
-    }
 }
