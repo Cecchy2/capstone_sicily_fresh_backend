@@ -24,4 +24,8 @@ public class Carrello {
 
     @OneToMany(mappedBy = "carrello")
     List<CarrelloDettaglio> carrelloDettaglioList;
+
+    public Carrello(Utente cliente) {
+        this.cliente = cliente;
+    }
 }

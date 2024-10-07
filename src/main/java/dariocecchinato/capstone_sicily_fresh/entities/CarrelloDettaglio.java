@@ -26,4 +26,10 @@ public class CarrelloDettaglio {
     private Ricetta ricetta;
 
     private int quantita;
+
+    public CarrelloDettaglio(Carrello carrello, Ricetta ricetta, int quantita) {
+        this.carrello = carrello;
+        this.ricetta = ricetta;
+        this.quantita = quantita;
+    }
 }
