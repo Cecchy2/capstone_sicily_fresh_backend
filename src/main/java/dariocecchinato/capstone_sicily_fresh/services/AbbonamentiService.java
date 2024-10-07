@@ -41,8 +41,14 @@ public class AbbonamentiService {
         found.setNome(body.nome());
         found.setNumeroRicette(body.numeroRicette()); // Assicurati di aggiornare numeroRicette
         found.setPrezzo(body.prezzo());
-
-
         return this.abbonamentiRepository.save(found);
+    }
+
+    public Abbonamento findByClienteId( UUID utenteId){
+        return abbonamentiRepository.findByClienteId(utenteId).orElseThrow(()->new NotFoundException(utenteId));
+    }
+
+    public void updateAbbonamento(Abbonamento abbonamento) {
+        abbonamentiRepository.save(abbonamento);
     }
 }

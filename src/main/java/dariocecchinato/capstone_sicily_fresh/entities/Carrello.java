@@ -1,6 +1,7 @@
 package dariocecchinato.capstone_sicily_fresh.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -23,6 +24,7 @@ public class Carrello {
     private Utente cliente;
 
     @OneToMany(mappedBy = "carrello")
+    @JsonIgnore
     List<CarrelloDettaglio> carrelloDettaglioList;
 
     public Carrello(Utente cliente) {

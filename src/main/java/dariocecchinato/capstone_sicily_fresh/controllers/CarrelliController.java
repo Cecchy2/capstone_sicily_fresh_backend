@@ -1,10 +1,12 @@
 package dariocecchinato.capstone_sicily_fresh.controllers;
 
+import dariocecchinato.capstone_sicily_fresh.entities.Carrello;
 import dariocecchinato.capstone_sicily_fresh.exceptions.BadRequestException;
 import dariocecchinato.capstone_sicily_fresh.payloads.CarrelloPayloadDTO;
 import dariocecchinato.capstone_sicily_fresh.payloads.CarrelloResponseDTO;
 import dariocecchinato.capstone_sicily_fresh.services.CarrelliService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -31,4 +33,5 @@ public class CarrelliController {
             return new CarrelloResponseDTO(this.carrelliService.creaCarrello(body).getId());
         }
     }
+
 }

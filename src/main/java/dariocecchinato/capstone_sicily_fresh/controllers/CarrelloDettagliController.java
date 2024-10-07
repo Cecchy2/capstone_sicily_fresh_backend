@@ -1,10 +1,13 @@
 package dariocecchinato.capstone_sicily_fresh.controllers;
 
+import dariocecchinato.capstone_sicily_fresh.entities.Carrello;
+import dariocecchinato.capstone_sicily_fresh.entities.CarrelloDettaglio;
 import dariocecchinato.capstone_sicily_fresh.exceptions.BadRequestException;
 import dariocecchinato.capstone_sicily_fresh.payloads.CarrelloDettaglioPayloadDTO;
 import dariocecchinato.capstone_sicily_fresh.payloads.CarrelloDettaglioResponseDTO;
 import dariocecchinato.capstone_sicily_fresh.services.CarrelloDettagliService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -32,5 +35,13 @@ public class CarrelloDettagliController {
         }else{
             return new CarrelloDettaglioResponseDTO(this.carrelloDettagliService.creaCarrelloDettaglio(body).getId());
         }
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'FORNITORE', 'CLIENTE')")
+    public Page<CarrelloDettaglio> getAll(@RequestParam(defaultValue = "0") int page,
+                                          @RequestParam(defaultValue = "10") int size,
+                                          @RequestParam(defaultValue = "id") String sortby){
+        return this.carrelloDettagliService.getAll(page, size, sortby);
     }
 }
