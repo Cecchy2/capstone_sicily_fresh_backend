@@ -5,6 +5,7 @@ import dariocecchinato.capstone_sicily_fresh.entities.Utente;
 import dariocecchinato.capstone_sicily_fresh.exceptions.NotFoundException;
 import dariocecchinato.capstone_sicily_fresh.payloads.CarrelloPayloadDTO;
 import dariocecchinato.capstone_sicily_fresh.repositories.CarrelliRepository;
+import org.springframework.beans.NotReadablePropertyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,5 +26,9 @@ public class CarrelliService {
         Utente cliente = this.utentiService.findUtenteById(body.cliente());
         Carrello carrello = new Carrello(cliente);
         return this.carrelliRepository.save(carrello);
+    }
+
+    public Carrello findByClienteId(UUID clienteId){
+        return this.carrelliRepository.findByClienteId(clienteId).orElseThrow(()-> new NotFoundException(clienteId));
     }
 }

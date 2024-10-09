@@ -4,11 +4,9 @@ import dariocecchinato.capstone_sicily_fresh.entities.Ricetta;
 import dariocecchinato.capstone_sicily_fresh.entities.Utente;
 import dariocecchinato.capstone_sicily_fresh.enums.RuoloUtente;
 import dariocecchinato.capstone_sicily_fresh.exceptions.BadRequestException;
-import dariocecchinato.capstone_sicily_fresh.payloads.UtenteLoginDTO;
-import dariocecchinato.capstone_sicily_fresh.payloads.UtenteLoginResponseDTO;
-import dariocecchinato.capstone_sicily_fresh.payloads.UtentiPayloadDTO;
-import dariocecchinato.capstone_sicily_fresh.payloads.UtentiResponseDTO;
+import dariocecchinato.capstone_sicily_fresh.payloads.*;
 import dariocecchinato.capstone_sicily_fresh.services.AuthorizationsService;
+import dariocecchinato.capstone_sicily_fresh.services.CarrelliService;
 import dariocecchinato.capstone_sicily_fresh.services.RicetteService;
 import dariocecchinato.capstone_sicily_fresh.services.UtentiService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +31,8 @@ public class AuthorizationController {
     private AuthorizationsService authorizationsService;
     @Autowired
     private RicetteService ricetteService;
+    @Autowired
+    private CarrelliService carrelliService;
 
     @PostMapping("/login")
     public UtenteLoginResponseDTO login(@RequestBody UtenteLoginDTO body){
@@ -72,5 +72,18 @@ public class AuthorizationController {
     public Ricetta findById (@PathVariable UUID ricettaId){
         Ricetta found = this.ricetteService.findById(ricettaId);
         return found;
+    }
+
+    @PostMapping ("/carrelli")
+    @ResponseStatus(HttpStatus.CREATED)
+
+    public CarrelloResponseDTO creaCarrello(@RequestBody @Validated CarrelloPayloadDTO body, BindingResult validationResult){
+        if (validationResult.hasErrors()){
+            String messages= validationResult.getAllErrors().stream()
+                    .map(objectError -> objectError.getDefaultMessage()).collect(Collectors.joining(". "));
+            throw new BadRequestException("Errori nel payload " + messages);
+        }else{
+            return new CarrelloResponseDTO(this.carrelliService.creaCarrello(body).getId());
+        }
     }
 }

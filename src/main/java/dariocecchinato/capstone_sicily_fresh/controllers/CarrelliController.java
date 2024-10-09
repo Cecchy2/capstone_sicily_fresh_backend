@@ -13,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -23,7 +24,7 @@ public class CarrelliController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'FORNITORE')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'FORNITORE', 'CLIENTE')")
     public CarrelloResponseDTO creaCarrello(@RequestBody @Validated CarrelloPayloadDTO body, BindingResult validationResult){
         if (validationResult.hasErrors()){
             String messages= validationResult.getAllErrors().stream()
@@ -32,6 +33,11 @@ public class CarrelliController {
         }else{
             return new CarrelloResponseDTO(this.carrelliService.creaCarrello(body).getId());
         }
+    }
+
+    @GetMapping("/{clienteId}")
+    public Carrello findCarrelloByClienteId(@PathVariable UUID clienteId){
+        return carrelliService.findByClienteId(clienteId);
     }
 
 }
