@@ -14,6 +14,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -43,5 +45,11 @@ public class CarrelloDettagliController {
                                           @RequestParam(defaultValue = "10") int size,
                                           @RequestParam(defaultValue = "id") String sortby){
         return this.carrelloDettagliService.getAll(page, size, sortby);
+    }
+
+    @GetMapping("/{carrelloId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'FORNITORE', 'CLIENTE')")
+    public List<CarrelloDettaglio> getAllCarrelloDettaglio(@PathVariable UUID carrelloId){
+        return this.carrelloDettagliService.findByCarrelloId(carrelloId);
     }
 }

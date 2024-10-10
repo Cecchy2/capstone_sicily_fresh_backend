@@ -37,7 +37,6 @@ public class CarrelloDettagliService {
         Carrello carrello = this.carrelliService.findById(body.carrello());
         Ricetta ricetta = this.ricetteService.findById(body.ricetta());
 
-
         Utente cliente = this.utentiService.findUtenteById(carrello.getCliente().getId());
         UUID clienteId = cliente.getId();
         List<Abbonamento> abbonamenti = abbonamentiService.findByClienteId(clienteId);
@@ -45,19 +44,12 @@ public class CarrelloDettagliService {
         if (abbonamenti.isEmpty()) {
             throw new BadRequestException("Nessun abbonamento trovato per questo cliente.");
         }
-
-
         int totaleRicetteDisponibili = abbonamenti.stream().mapToInt(Abbonamento::getNumeroRicette).sum();
-
-
         int quantitaDaAggiungere = body.quantita();
-
 
         if (totaleRicetteDisponibili < quantitaDaAggiungere) {
             throw new BadRequestException("Non ci sono abbastanza ricette disponibili nell'abbonamento.");
         }
-
-
         int ricetteDaSottrarre = quantitaDaAggiungere;
         for (Abbonamento abbonamento : abbonamenti) {
             int ricetteDisponibili = abbonamento.getNumeroRicette();
@@ -86,5 +78,9 @@ public class CarrelloDettagliService {
         if (page > 10) page = 10;
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortby));
         return this.carrelloDettagliRepository.findAll(pageable);
+    }
+
+    public List<CarrelloDettaglio> findByCarrelloId(UUID carrelloId){
+        return this.carrelloDettagliRepository.findByCarrelloId(carrelloId);
     }
 }
