@@ -1,5 +1,6 @@
 package dariocecchinato.capstone_sicily_fresh.entities;
 
+import dariocecchinato.capstone_sicily_fresh.enums.StatoOrdine;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -27,9 +28,13 @@ public class CarrelloDettaglio {
 
     private int quantita;
 
-    public CarrelloDettaglio(Carrello carrello, Ricetta ricetta, int quantita) {
+    @Enumerated(EnumType.STRING)
+    private StatoOrdine statoOrdine;
+
+    public CarrelloDettaglio(Carrello carrello, Ricetta ricetta, int quantita, StatoOrdine statoOrdine) {
         this.carrello = carrello;
         this.ricetta = ricetta;
         this.quantita = quantita;
+        this.statoOrdine = statoOrdine;
     }
 }

@@ -59,4 +59,10 @@ public class AbbonamentiController {
         }
     }
 
+    @GetMapping("/{clienteId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'FORNITORE', 'CLIENTE')")
+    public List<Abbonamento> findByClienteId(@PathVariable UUID clienteId){
+        return this.abbonamentiService.findByClienteId(clienteId);
+    }
+
 }

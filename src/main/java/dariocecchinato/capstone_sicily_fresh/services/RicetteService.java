@@ -59,6 +59,8 @@ public class RicetteService {
         ricetta.setTempo(body.tempo());
         ricetta.setValoriNutrizionali(body.valoriNutrizionali());
         ricetta.setFornitore(fornitore);
+        ricetta.setPortata(body.portata());
+        ricetta.setTipo(body.tipo());
 
         Ricetta savedRicetta = ricetteRepository.save(ricetta);
 

@@ -44,8 +44,8 @@ public class AbbonamentiService {
         return this.abbonamentiRepository.save(found);
     }
 
-    public Abbonamento findByClienteId( UUID utenteId){
-        return abbonamentiRepository.findByClienteId(utenteId).orElseThrow(()->new NotFoundException(utenteId));
+    public List<Abbonamento> findByClienteId( UUID utenteId){
+        return abbonamentiRepository.findByClienteId(utenteId);
     }
 
     public void updateAbbonamento(Abbonamento abbonamento) {

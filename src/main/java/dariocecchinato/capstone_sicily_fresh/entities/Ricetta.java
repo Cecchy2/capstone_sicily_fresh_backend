@@ -1,6 +1,8 @@
 package dariocecchinato.capstone_sicily_fresh.entities;
 
 import dariocecchinato.capstone_sicily_fresh.enums.Difficolta;
+import dariocecchinato.capstone_sicily_fresh.enums.Portata;
+import dariocecchinato.capstone_sicily_fresh.enums.Tipo;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -27,6 +29,10 @@ public class Ricetta {
     private String immaginePiatto;
     @Enumerated(EnumType.STRING)
     private Difficolta difficolta;
+    @Enumerated(EnumType.STRING)
+    private Portata portata;
+    @Enumerated(EnumType.STRING)
+    private Tipo tipo;
     private String tempo;
     private String valoriNutrizionali;
 
@@ -39,6 +45,8 @@ public class Ricetta {
     @ManyToOne
     @JoinColumn(name = "fornitore_id")
     private Utente fornitore;
+
+
 
 
     public Ricetta(String titolo, String descrizione, String immaginePiatto, Difficolta difficolta, String tempo, String valoriNutrizionali, List<PassaggioDiPreparazione> passaggi, List<RicettaIngrediente> ricettaIngredienti, Utente fornitore) {

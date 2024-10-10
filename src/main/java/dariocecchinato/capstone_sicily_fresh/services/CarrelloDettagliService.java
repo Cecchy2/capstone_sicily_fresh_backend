@@ -1,9 +1,7 @@
 package dariocecchinato.capstone_sicily_fresh.services;
 
-import dariocecchinato.capstone_sicily_fresh.entities.Abbonamento;
-import dariocecchinato.capstone_sicily_fresh.entities.Carrello;
-import dariocecchinato.capstone_sicily_fresh.entities.CarrelloDettaglio;
-import dariocecchinato.capstone_sicily_fresh.entities.Ricetta;
+import dariocecchinato.capstone_sicily_fresh.entities.*;
+import dariocecchinato.capstone_sicily_fresh.enums.StatoOrdine;
 import dariocecchinato.capstone_sicily_fresh.exceptions.BadRequestException;
 import dariocecchinato.capstone_sicily_fresh.payloads.CarrelloDettaglioPayloadDTO;
 import dariocecchinato.capstone_sicily_fresh.payloads.CarrelloDettaglioResponseDTO;
@@ -17,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -29,28 +28,59 @@ public class CarrelloDettagliService {
     private RicetteService ricetteService;
     @Autowired
     private AbbonamentiService abbonamentiService;
+    @Autowired
+    private UtentiService utentiService;
 
 
     public CarrelloDettaglio creaCarrelloDettaglio(CarrelloDettaglioPayloadDTO body) {
+
         Carrello carrello = this.carrelliService.findById(body.carrello());
         Ricetta ricetta = this.ricetteService.findById(body.ricetta());
 
-        UUID clienteId = carrello.getCliente().getId();
-        Abbonamento abbonamento = abbonamentiService.findByClienteId(clienteId);
+
+        Utente cliente = this.utentiService.findUtenteById(carrello.getCliente().getId());
+        UUID clienteId = cliente.getId();
+        List<Abbonamento> abbonamenti = abbonamentiService.findByClienteId(clienteId);
+
+        if (abbonamenti.isEmpty()) {
+            throw new BadRequestException("Nessun abbonamento trovato per questo cliente.");
+        }
+
+
+        int totaleRicetteDisponibili = abbonamenti.stream().mapToInt(Abbonamento::getNumeroRicette).sum();
+
 
         int quantitaDaAggiungere = body.quantita();
-        if (abbonamento.getNumeroRicette() < quantitaDaAggiungere) {
+
+
+        if (totaleRicetteDisponibili < quantitaDaAggiungere) {
             throw new BadRequestException("Non ci sono abbastanza ricette disponibili nell'abbonamento.");
         }
 
-        CarrelloDettaglio carrelloDettaglio = new CarrelloDettaglio(carrello, ricetta, quantitaDaAggiungere);
-        CarrelloDettaglio savedCarrelloDettaglio = this.carrelloDettagliRepository.save(carrelloDettaglio);
 
-        abbonamento.setNumeroRicette(abbonamento.getNumeroRicette() - quantitaDaAggiungere);
-        abbonamentiService.updateAbbonamento(abbonamento);
+        int ricetteDaSottrarre = quantitaDaAggiungere;
+        for (Abbonamento abbonamento : abbonamenti) {
+            int ricetteDisponibili = abbonamento.getNumeroRicette();
+            if (ricetteDisponibili >= ricetteDaSottrarre) {
+
+                abbonamento.setNumeroRicette(ricetteDisponibili - ricetteDaSottrarre);
+                abbonamentiService.updateAbbonamento(abbonamento);
+                break;
+            } else {
+                abbonamento.setNumeroRicette(0);
+                abbonamentiService.updateAbbonamento(abbonamento);
+                ricetteDaSottrarre -= ricetteDisponibili;
+            }
+        }
+
+        StatoOrdine statoOrdine = StatoOrdine.valueOf("INCARRELLO");
+        
+        CarrelloDettaglio carrelloDettaglio = new CarrelloDettaglio(carrello, ricetta, quantitaDaAggiungere, statoOrdine);
+        CarrelloDettaglio savedCarrelloDettaglio = this.carrelloDettagliRepository.save(carrelloDettaglio);
 
         return savedCarrelloDettaglio;
     }
+
 
     public Page<CarrelloDettaglio> getAll(int page, int size, String sortby){
         if (page > 10) page = 10;

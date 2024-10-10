@@ -9,6 +9,7 @@ import org.springframework.beans.NotReadablePropertyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -22,10 +23,15 @@ public class CarrelliService {
         return this.carrelliRepository.findById(carrelloId).orElseThrow(()-> new NotFoundException(carrelloId));
     }
 
-    public Carrello creaCarrello(CarrelloPayloadDTO body){
+    public Carrello creaCarrello(CarrelloPayloadDTO body) {
+        Optional<Carrello> existingCarrello = carrelliRepository.findByClienteId(body.cliente());
+
+        if (existingCarrello.isPresent()) {
+            return existingCarrello.get();
+        }
         Utente cliente = this.utentiService.findUtenteById(body.cliente());
-        Carrello carrello = new Carrello(cliente);
-        return this.carrelliRepository.save(carrello);
+        Carrello newCarrello = new Carrello(cliente);
+        return this.carrelliRepository.save(newCarrello);
     }
 
     public Carrello findByClienteId(UUID clienteId){
