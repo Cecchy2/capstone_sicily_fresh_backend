@@ -1,6 +1,6 @@
 package dariocecchinato.capstone_sicily_fresh.controllers;
 
-import dariocecchinato.capstone_sicily_fresh.entities.Carrello;
+
 import dariocecchinato.capstone_sicily_fresh.entities.CarrelloDettaglio;
 import dariocecchinato.capstone_sicily_fresh.exceptions.BadRequestException;
 import dariocecchinato.capstone_sicily_fresh.payloads.CarrelloDettaglioPayloadDTO;
@@ -49,7 +49,7 @@ public class CarrelloDettagliController {
 
     @GetMapping("/{carrelloId}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'FORNITORE', 'CLIENTE')")
-    public List<CarrelloDettaglio> getAllCarrelloDettaglio(@PathVariable UUID carrelloId){
+    public List<CarrelloDettaglio> getCarrelloDettaglioByCarrello(@PathVariable UUID carrelloId){
         return this.carrelloDettagliService.findByCarrelloId(carrelloId);
     }
 
@@ -58,6 +58,12 @@ public class CarrelloDettagliController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCArrelloDettaglio(@PathVariable UUID carrelloDettaglioId){
         this.carrelloDettagliService.deleteCarrelloDettaglio(carrelloDettaglioId);
+    }
+
+    @GetMapping("/ricetta/{ricettaId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'FORNITORE', 'CLIENTE')")
+    public List<CarrelloDettaglio> getCarrelloDettaglioByRicetta(@PathVariable UUID ricettaId){
+        return this.carrelloDettagliService.findByRicettaId(ricettaId);
     }
 
 }

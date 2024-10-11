@@ -105,12 +105,16 @@ public class CarrelloDettagliService {
 
         for (Abbonamento abbonamento : abbonamenti) {
             int ricetteDisponibili = abbonamento.getNumeroRicette();
-
             abbonamento.setNumeroRicette(ricetteDisponibili + quantitaDaRestituire);
             abbonamentiService.updateAbbonamento(abbonamento);
             break;
         }
-
         this.carrelloDettagliRepository.delete(found);
     }
+
+    public List<CarrelloDettaglio> findByRicettaId(UUID ricettaId){
+        return this.carrelloDettagliRepository.findByRicettaId(ricettaId);
+    }
+
+    
 }
