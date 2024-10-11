@@ -116,5 +116,7 @@ public class CarrelloDettagliService {
         return this.carrelloDettagliRepository.findByRicettaId(ricettaId);
     }
 
-    
+    public List<CarrelloDettaglio> findByRicettaIdAndStatoOrdine(UUID ricettaId, StatoOrdine statoOrdine){
+        return this.carrelloDettagliRepository.findByRicettaIdAndStatoOrdine(ricettaId,statoOrdine);
+    }
 }

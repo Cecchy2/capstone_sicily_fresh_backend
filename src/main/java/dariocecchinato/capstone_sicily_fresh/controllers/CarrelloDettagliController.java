@@ -2,6 +2,7 @@ package dariocecchinato.capstone_sicily_fresh.controllers;
 
 
 import dariocecchinato.capstone_sicily_fresh.entities.CarrelloDettaglio;
+import dariocecchinato.capstone_sicily_fresh.enums.StatoOrdine;
 import dariocecchinato.capstone_sicily_fresh.exceptions.BadRequestException;
 import dariocecchinato.capstone_sicily_fresh.payloads.CarrelloDettaglioPayloadDTO;
 import dariocecchinato.capstone_sicily_fresh.payloads.CarrelloDettaglioResponseDTO;
@@ -65,5 +66,15 @@ public class CarrelloDettagliController {
     public List<CarrelloDettaglio> getCarrelloDettaglioByRicetta(@PathVariable UUID ricettaId){
         return this.carrelloDettagliService.findByRicettaId(ricettaId);
     }
+
+    @GetMapping("/ricetta/{ricettaId}/stato/{statoOrdine}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'FORNITORE', 'CLIENTE')")
+    public List<CarrelloDettaglio> getCarrelloDettaglioByRicettaAndStato(
+            @PathVariable UUID ricettaId,
+            @PathVariable StatoOrdine statoOrdine) {
+        return this.carrelloDettagliService.findByRicettaIdAndStatoOrdine(ricettaId, statoOrdine);
+    }
+
+
 
 }
