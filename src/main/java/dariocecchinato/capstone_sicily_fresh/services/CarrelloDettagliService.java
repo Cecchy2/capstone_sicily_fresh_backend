@@ -87,9 +87,30 @@ public class CarrelloDettagliService {
         return this.carrelloDettagliRepository.findByCarrelloId(carrelloId);
     }
 
-    public void deleteCarrelloDettaglio (UUID carrelloDettaglioId){
+    public void deleteCarrelloDettaglio(UUID carrelloDettaglioId) {
+        CarrelloDettaglio found = this.carrelloDettagliRepository.findById(carrelloDettaglioId)
+                .orElseThrow(() -> new NotFoundException(carrelloDettaglioId));
 
-        CarrelloDettaglio found = this.carrelloDettagliRepository.findById(carrelloDettaglioId).orElseThrow(()-> new NotFoundException(carrelloDettaglioId));
+        Carrello carrello = found.getCarrello();
+        Utente cliente = this.utentiService.findUtenteById(carrello.getCliente().getId());
+        UUID clienteId = cliente.getId();
+
+        List<Abbonamento> abbonamenti = abbonamentiService.findByClienteId(clienteId);
+
+        if (abbonamenti.isEmpty()) {
+            throw new BadRequestException("Nessun abbonamento trovato per questo cliente.");
+        }
+
+        int quantitaDaRestituire = found.getQuantita();
+
+        for (Abbonamento abbonamento : abbonamenti) {
+            int ricetteDisponibili = abbonamento.getNumeroRicette();
+
+            abbonamento.setNumeroRicette(ricetteDisponibili + quantitaDaRestituire);
+            abbonamentiService.updateAbbonamento(abbonamento);
+            break;
+        }
+
         this.carrelloDettagliRepository.delete(found);
     }
 }
