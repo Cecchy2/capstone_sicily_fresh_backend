@@ -3,6 +3,7 @@ package dariocecchinato.capstone_sicily_fresh.services;
 import dariocecchinato.capstone_sicily_fresh.entities.*;
 import dariocecchinato.capstone_sicily_fresh.enums.StatoOrdine;
 import dariocecchinato.capstone_sicily_fresh.exceptions.BadRequestException;
+import dariocecchinato.capstone_sicily_fresh.exceptions.NotFoundException;
 import dariocecchinato.capstone_sicily_fresh.payloads.CarrelloDettaglioPayloadDTO;
 import dariocecchinato.capstone_sicily_fresh.payloads.CarrelloDettaglioResponseDTO;
 import dariocecchinato.capstone_sicily_fresh.repositories.CarrelliRepository;
@@ -44,7 +45,9 @@ public class CarrelloDettagliService {
         if (abbonamenti.isEmpty()) {
             throw new BadRequestException("Nessun abbonamento trovato per questo cliente.");
         }
-        int totaleRicetteDisponibili = abbonamenti.stream().mapToInt(Abbonamento::getNumeroRicette).sum();
+        int totaleRicetteDisponibili = abbonamenti.stream()
+                .map(abbonamento -> abbonamento.getNumeroRicette())
+                .reduce(0, (subtotal, numeroRicette) -> subtotal + numeroRicette);
         int quantitaDaAggiungere = body.quantita();
 
         if (totaleRicetteDisponibili < quantitaDaAggiungere) {
@@ -82,5 +85,11 @@ public class CarrelloDettagliService {
 
     public List<CarrelloDettaglio> findByCarrelloId(UUID carrelloId){
         return this.carrelloDettagliRepository.findByCarrelloId(carrelloId);
+    }
+
+    public void deleteCarrelloDettaglio (UUID carrelloDettaglioId){
+
+        CarrelloDettaglio found = this.carrelloDettagliRepository.findById(carrelloDettaglioId).orElseThrow(()-> new NotFoundException(carrelloDettaglioId));
+        this.carrelloDettagliRepository.delete(found);
     }
 }

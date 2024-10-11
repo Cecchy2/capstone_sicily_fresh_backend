@@ -52,4 +52,12 @@ public class CarrelloDettagliController {
     public List<CarrelloDettaglio> getAllCarrelloDettaglio(@PathVariable UUID carrelloId){
         return this.carrelloDettagliService.findByCarrelloId(carrelloId);
     }
+
+    @DeleteMapping("/{carrelloDettaglioId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'FORNITORE', 'CLIENTE')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCArrelloDettaglio(@PathVariable UUID carrelloDettaglioId){
+        this.carrelloDettagliService.deleteCarrelloDettaglio(carrelloDettaglioId);
+    }
+
 }

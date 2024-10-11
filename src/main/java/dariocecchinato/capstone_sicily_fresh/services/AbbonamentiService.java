@@ -39,7 +39,7 @@ public class AbbonamentiService {
     public Abbonamento findByIdAndUpdate (UUID abbonamentoId, AbbonamentoPayloadDTO body){
         Abbonamento found = this.abbonamentiRepository.findById(abbonamentoId).orElseThrow(()-> new NotFoundException(abbonamentoId));
         found.setNome(body.nome());
-        found.setNumeroRicette(body.numeroRicette()); // Assicurati di aggiornare numeroRicette
+        found.setNumeroRicette(body.numeroRicette());
         found.setPrezzo(body.prezzo());
         return this.abbonamentiRepository.save(found);
     }
