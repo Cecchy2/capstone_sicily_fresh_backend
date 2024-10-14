@@ -16,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -73,6 +74,31 @@ public class CarrelloDettagliController {
             @PathVariable UUID ricettaId,
             @PathVariable StatoOrdine statoOrdine) {
         return this.carrelloDettagliService.findByRicettaIdAndStatoOrdine(ricettaId, statoOrdine);
+    }
+
+    @PatchMapping("/{carrelloDettaglioId}/stato")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'FORNITORE', 'CLIENTE')")
+    @ResponseStatus(HttpStatus.OK)
+    public CarrelloDettaglioResponseDTO aggiornaStatoOrdine(
+            @PathVariable UUID carrelloDettaglioId,
+            @RequestBody Map<String, String> body) {
+
+        if (!body.containsKey("statoOrdine")) {
+            throw new BadRequestException("Il campo statoOrdine è obbligatorio");
+        }
+
+        String statoOrdineStr = body.get("statoOrdine").toUpperCase();
+
+        StatoOrdine statoOrdine;
+        try {
+            statoOrdine = StatoOrdine.valueOf(statoOrdineStr);
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("StatoOrdine non valido: " + statoOrdineStr);
+        }
+
+        CarrelloDettaglio carrelloDettaglioAggiornato = carrelloDettagliService.aggiornaStatoOrdine(carrelloDettaglioId, statoOrdine);
+
+        return new CarrelloDettaglioResponseDTO(carrelloDettaglioAggiornato.getId());
     }
 
 

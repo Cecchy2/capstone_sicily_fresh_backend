@@ -119,4 +119,12 @@ public class CarrelloDettagliService {
     public List<CarrelloDettaglio> findByRicettaIdAndStatoOrdine(UUID ricettaId, StatoOrdine statoOrdine){
         return this.carrelloDettagliRepository.findByRicettaIdAndStatoOrdine(ricettaId,statoOrdine);
     }
+
+    public CarrelloDettaglio aggiornaStatoOrdine(UUID carrelloDettaglioId, StatoOrdine nuovoStatoOrdine) {
+        CarrelloDettaglio carrelloDettaglio = carrelloDettagliRepository.findById(carrelloDettaglioId)
+                .orElseThrow(() -> new NotFoundException("CarrelloDettaglio non trovato per id: " + carrelloDettaglioId));
+
+        carrelloDettaglio.setStatoOrdine(nuovoStatoOrdine);
+        return carrelloDettagliRepository.save(carrelloDettaglio);
+    }
 }
