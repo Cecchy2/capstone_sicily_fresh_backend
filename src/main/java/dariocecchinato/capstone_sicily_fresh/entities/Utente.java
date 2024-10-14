@@ -43,8 +43,10 @@ public class Utente  implements UserDetails {
     @OneToMany(mappedBy = "cliente")
     @JsonBackReference
     private List<Abbonamento> abbonamenti;
+    private String indirizzo;
+    private String citta;
 
-    public Utente(String email, String password, String nome, String cognome, String username, LocalDate dataDiNascita, String avatar, RuoloUtente ruolo) {
+    public Utente(String email, String password, String nome, String cognome, String username, LocalDate dataDiNascita, String avatar, RuoloUtente ruolo, String indirizzo, String citta) {
         this.email = email;
         this.password = password;
         this.nome = nome;
@@ -53,6 +55,8 @@ public class Utente  implements UserDetails {
         this.dataDiNascita = dataDiNascita;
         this.avatar = avatar;
         this.ruolo = ruolo;
+        this.indirizzo= indirizzo;
+        this.citta = citta;
     }
 
     @Override

@@ -26,6 +26,10 @@ public record UtentiPayloadDTO(
         @NotNull(message = "Devi inserire una data di nascita")
         LocalDate dataDiNascita,
         @NotNull(message = "Devi inserire un ruolo, CLIENTE o FORNITORE")
-        RuoloUtente ruolo
+        RuoloUtente ruolo,
+        @NotEmpty(message = "Devi inserire un indirizzo")
+        String indirizzo,
+        @NotEmpty(message = "Devi inserire una citta")
+        String citta
 ) {
 }

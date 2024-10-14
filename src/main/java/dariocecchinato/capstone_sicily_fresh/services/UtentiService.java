@@ -38,6 +38,8 @@ public class UtentiService {
        newUtente.setPassword(bcrypt.encode(body.password()));
        newUtente.setDataDiNascita(body.dataDiNascita());
        newUtente.setRuolo(body.ruolo());
+       newUtente.setIndirizzo(body.indirizzo());
+       newUtente.setCitta(body.citta());
 
         newUtente = utentiRepository.save(newUtente);
 
