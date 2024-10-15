@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class CarrelloDettagliService {
@@ -127,4 +128,15 @@ public class CarrelloDettagliService {
         carrelloDettaglio.setStatoOrdine(nuovoStatoOrdine);
         return carrelloDettagliRepository.save(carrelloDettaglio);
     }
+
+    public List<CarrelloDettaglio> findCarrelloDettagliByFornitoreId(UUID fornitoreId) {
+        List<Ricetta> ricetteDelFornitore = ricetteService.findRicetteByFornitoreId(fornitoreId);
+
+
+        List<UUID> ricettaIds = ricetteDelFornitore.stream()
+                .map(Ricetta::getId)
+                .collect(Collectors.toList());
+        return carrelloDettagliRepository.findByRicettaIdIn(ricettaIds);
+    }
 }
+

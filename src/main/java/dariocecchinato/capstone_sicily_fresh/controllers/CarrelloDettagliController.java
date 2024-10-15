@@ -4,6 +4,7 @@ package dariocecchinato.capstone_sicily_fresh.controllers;
 import dariocecchinato.capstone_sicily_fresh.entities.CarrelloDettaglio;
 import dariocecchinato.capstone_sicily_fresh.enums.StatoOrdine;
 import dariocecchinato.capstone_sicily_fresh.exceptions.BadRequestException;
+import dariocecchinato.capstone_sicily_fresh.exceptions.NotFoundException;
 import dariocecchinato.capstone_sicily_fresh.payloads.CarrelloDettaglioPayloadDTO;
 import dariocecchinato.capstone_sicily_fresh.payloads.CarrelloDettaglioResponseDTO;
 import dariocecchinato.capstone_sicily_fresh.services.CarrelloDettagliService;
@@ -99,6 +100,19 @@ public class CarrelloDettagliController {
         CarrelloDettaglio carrelloDettaglioAggiornato = carrelloDettagliService.aggiornaStatoOrdine(carrelloDettaglioId, statoOrdine);
 
         return new CarrelloDettaglioResponseDTO(carrelloDettaglioAggiornato.getId());
+    }
+
+    @GetMapping("/fornitore/{fornitoreId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'FORNITORE', 'CLIENTE')")
+    @ResponseStatus(HttpStatus.OK)
+    public List<CarrelloDettaglio> getCarrelloDettagliByFornitoreId(@PathVariable UUID fornitoreId) {
+        List<CarrelloDettaglio> carrelloDettagli = carrelloDettagliService.findCarrelloDettagliByFornitoreId(fornitoreId);
+
+        if (carrelloDettagli.isEmpty()) {
+            return (List<CarrelloDettaglio>) new NotFoundException("Nessun Carrello trovato per il fornitore con id : " + fornitoreId);
+        }
+
+        return carrelloDettagli;
     }
 
 

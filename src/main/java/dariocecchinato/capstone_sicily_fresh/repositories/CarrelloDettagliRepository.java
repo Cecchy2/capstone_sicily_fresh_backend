@@ -16,4 +16,6 @@ public interface CarrelloDettagliRepository extends JpaRepository<CarrelloDettag
     List<CarrelloDettaglio> findByRicettaId(UUID ricettaId);
 
     List<CarrelloDettaglio> findByRicettaIdAndStatoOrdine(UUID ricettaId, StatoOrdine statoOrdine);
+
+    List<CarrelloDettaglio> findByRicettaIdIn(List<UUID> ricettaIds);
 }
