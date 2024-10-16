@@ -50,8 +50,9 @@ public class RicettaController {
     @GetMapping
     @PreAuthorize("hasAnyAuthority('ADMIN', 'FORNITORE', 'CLIENTE')")
     public Page<Ricetta> findAll (@RequestParam(defaultValue = "0") int page,
-                                  @RequestParam(defaultValue = "10") int size,
+                                  @RequestParam(defaultValue = "30") int size,
                                   @RequestParam(defaultValue = "id") String sortby){
+        System.out.println("Page: " + page + ", Size: " + size);
         return ricetteService.findAll(page, size, sortby);
     }
 

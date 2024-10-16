@@ -63,7 +63,7 @@ public class AuthorizationController {
 
     @GetMapping
     public Page<Ricetta> findAll (@RequestParam(defaultValue = "0") int page,
-                                  @RequestParam(defaultValue = "10") int size,
+                                  @RequestParam(defaultValue = "30") int size,
                                   @RequestParam(defaultValue = "id") String sortby){
         return ricetteService.findAll(page, size, sortby);
     }

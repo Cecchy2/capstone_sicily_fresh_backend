@@ -80,7 +80,6 @@ public class RicetteService {
             savedRicetta.setPassaggi(passaggi);
         }
 
-
         if (body.ricetteIngredienti() != null && !body.ricetteIngredienti().isEmpty()) {
             List<RicettaIngrediente> ricettaIngredienti = body.ricetteIngredienti().stream()
                     .map(ingredienteDTO -> {
@@ -100,8 +99,6 @@ public class RicetteService {
 
                             ingrediente = ingredientiService.saveIngrediente(ingredientePayloadDTO);
                         }
-
-
                         RicettaIngrediente ricettaIngrediente = new RicettaIngrediente();
                         ricettaIngrediente.setRicetta(savedRicetta);
                         ricettaIngrediente.setIngrediente(ingrediente);
@@ -115,10 +112,6 @@ public class RicetteService {
 
         return savedRicetta;
     }
-
-
-
-
 
     public Ricetta aggiornaRicetta(UUID ricettaId, RicettePayloadDTO body) {
 
@@ -178,7 +171,6 @@ public class RicetteService {
                             ingrediente = ingredientiService.saveIngrediente(ingredientePayloadDTO);
                         }
 
-
                         RicettaIngrediente ricettaIngrediente = new RicettaIngrediente();
                         ricettaIngrediente.setRicetta(ricettaEsistente);
                         ricettaIngrediente.setIngrediente(ingrediente);
@@ -196,7 +188,7 @@ public class RicetteService {
 
 
     public Page<Ricetta> findAll (int page, int size, String sortBy){
-        if (page> 10) page=10;
+        if (page> 20) page=20;
         Pageable pageable = PageRequest.of(page,size, Sort.by(sortBy));
         return ricetteRepository.findAll(pageable);
     }
