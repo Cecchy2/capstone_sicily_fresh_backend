@@ -109,7 +109,7 @@ public class CarrelloDettagliController {
         List<CarrelloDettaglio> carrelloDettagli = carrelloDettagliService.findCarrelloDettagliByFornitoreId(fornitoreId);
 
         if (carrelloDettagli.isEmpty()) {
-            return (List<CarrelloDettaglio>) new NotFoundException("Nessun Carrello trovato per il fornitore con id : " + fornitoreId);
+            throw new NotFoundException("Nessun Carrello trovato per il fornitore con id : " + fornitoreId);
         }
 
         return carrelloDettagli;
