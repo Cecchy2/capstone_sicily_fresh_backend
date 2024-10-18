@@ -7,6 +7,7 @@ import dariocecchinato.capstone_sicily_fresh.exceptions.BadRequestException;
 import dariocecchinato.capstone_sicily_fresh.exceptions.NotFoundException;
 import dariocecchinato.capstone_sicily_fresh.payloads.UtentiPayloadDTO;
 import dariocecchinato.capstone_sicily_fresh.repositories.UtentiRepository;
+import dariocecchinato.capstone_sicily_fresh.tools.MailgunSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +29,8 @@ public class UtentiService {
     private Cloudinary cloudinary;
     @Autowired
     private PasswordEncoder bcrypt;
+    @Autowired
+    private MailgunSender mailgunSender;
 
     public Utente saveUtente(UtentiPayloadDTO body, MultipartFile avatar)throws IOException {
        Utente newUtente = new Utente();
@@ -50,6 +53,8 @@ public class UtentiService {
 
             newUtente = utentiRepository.save(newUtente);
         }
+
+        mailgunSender.sendRegistrationEmail(newUtente);
 
         return newUtente;
     }
