@@ -8,6 +8,7 @@ import dariocecchinato.capstone_sicily_fresh.payloads.CarrelloDettaglioPayloadDT
 import dariocecchinato.capstone_sicily_fresh.payloads.CarrelloDettaglioResponseDTO;
 import dariocecchinato.capstone_sicily_fresh.repositories.CarrelliRepository;
 import dariocecchinato.capstone_sicily_fresh.repositories.CarrelloDettagliRepository;
+import dariocecchinato.capstone_sicily_fresh.tools.MailgunSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,6 +33,8 @@ public class CarrelloDettagliService {
     private AbbonamentiService abbonamentiService;
     @Autowired
     private UtentiService utentiService;
+    @Autowired
+    private MailgunSender mailgunSender;
 
 
     public CarrelloDettaglio creaCarrelloDettaglio(CarrelloDettaglioPayloadDTO body) {
@@ -126,7 +129,17 @@ public class CarrelloDettagliService {
                 .orElseThrow(() -> new NotFoundException("CarrelloDettaglio non trovato per id: " + carrelloDettaglioId));
 
         carrelloDettaglio.setStatoOrdine(nuovoStatoOrdine);
-        return carrelloDettagliRepository.save(carrelloDettaglio);
+
+        CarrelloDettaglio carrelloDettaglioSalvato = this.carrelloDettagliRepository.save(carrelloDettaglio);
+
+        if (nuovoStatoOrdine == StatoOrdine.valueOf("ORDINATO")){
+            Carrello carrello = carrelloDettaglio.getCarrello();
+            Utente cliente = carrello.getCliente();
+
+            this.mailgunSender.sendOrdineRicetteEmail(cliente);
+        }
+
+        return carrelloDettaglioSalvato;
     }
 
     public List<CarrelloDettaglio> findCarrelloDettagliByFornitoreId(UUID fornitoreId) {

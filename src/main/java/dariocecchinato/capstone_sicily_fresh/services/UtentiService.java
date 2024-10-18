@@ -101,4 +101,6 @@ public class UtentiService {
     public Utente findByEmail(String email) {
         return this.utentiRepository.findByEmail(email).orElseThrow(() -> new NotFoundException(email));
     }
+
+
 }

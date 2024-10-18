@@ -28,4 +28,15 @@ public class MailgunSender {
         System.out.println(request.getBody());
 
     }
+
+    public void sendOrdineRicetteEmail(Utente recipient){
+        HttpResponse<JsonNode> request = Unirest.post("https://api.mailgun.net/v3/" + this.domainName + "/messages")
+                .basicAuth("api", this.apiKey)
+                .queryString("from", "dariocecchinato@gmail.com")
+                .queryString("to", recipient.getEmail())
+                .queryString("subject", "Ordine Effettuato")
+                .queryString("text", "Ciao " + recipient.getNome() + ", ti confermo che hai effettuato l' ordine")
+                .asJson();
+        System.out.println(request.getBody());
+    }
 }
