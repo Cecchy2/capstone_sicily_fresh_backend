@@ -21,5 +21,4 @@ public record AbbonamentoPayloadDTO(
         LocalDate dataScadenza,
         @NotNull(message = "Il cliente non può essere nullo")
         UUID cliente
-) {
-}
+) {}
