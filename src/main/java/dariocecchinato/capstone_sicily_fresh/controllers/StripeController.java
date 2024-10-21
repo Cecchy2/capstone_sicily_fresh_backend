@@ -31,7 +31,7 @@ public class StripeController {
 
         SessionCreateParams params = SessionCreateParams.builder()
                 .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl(YOUR_DOMAIN + "/success")
+                .setSuccessUrl(YOUR_DOMAIN + "/success/" + price)
                 .setCancelUrl(YOUR_DOMAIN + "/cancel")
                 .addLineItem(
                         SessionCreateParams.LineItem.builder()
