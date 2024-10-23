@@ -25,8 +25,8 @@ public class StripeController {
     public Map<String, String> createCheckoutSession(@RequestBody StripePayloadDTO payload) throws Exception {
 
         Stripe.apiKey = stripeApiKey;
-        //String YOUR_DOMAIN = "https://sicilyfresh.netlify.app";
-        String YOUR_DOMAIN = "http://localhost:5173";
+        String YOUR_DOMAIN = "https://sicilyfresh.netlify.app";
+        //String YOUR_DOMAIN = "http://localhost:5173";
 
         String price = String.valueOf(payload.price());
 
