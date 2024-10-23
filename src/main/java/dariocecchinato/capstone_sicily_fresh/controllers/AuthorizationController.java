@@ -56,6 +56,10 @@ public class AuthorizationController {
                     .collect(Collectors.joining(". "));
             throw new BadRequestException("Ci sono stati errori nel payload. " + messages);
         }
+
+        if (utentiService.existsByEmail(body.email())) {
+            throw new BadRequestException("L'email è già in uso.");
+        }
         
         Utente newUser = utentiService.saveUtente(body, avatar);
         return new UtentiResponseDTO(newUser.getId());
