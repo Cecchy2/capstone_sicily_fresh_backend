@@ -3,7 +3,6 @@ package dariocecchinato.capstone_sicily_fresh.services;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import dariocecchinato.capstone_sicily_fresh.entities.Utente;
-import dariocecchinato.capstone_sicily_fresh.exceptions.BadRequestException;
 import dariocecchinato.capstone_sicily_fresh.exceptions.NotFoundException;
 import dariocecchinato.capstone_sicily_fresh.payloads.UtentiPayloadDTO;
 import dariocecchinato.capstone_sicily_fresh.repositories.UtentiRepository;
